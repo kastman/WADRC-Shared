@@ -1,0 +1,8 @@
+config/database.yml
+webrat.log
+doc/
+._*
+.bundle
+db/*.sqlite3
+log/*.log
+tmp/

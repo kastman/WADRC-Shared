@@ -1,0 +1,33 @@
+<%= form_for(@functional_scenario) do |f| %>
+  <% if @functional_scenario.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@functional_scenario.errors.count, "error") %> prohibited this functional_scenario from being saved:</h2>
+
+      <ul>
+      <% @functional_scenario.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :description %><br />
+    <%= f.text_field :description %>
+  </div>
+  <div class="field">
+    <%= f.label :functional_set %><br />
+    <%= f.text_field :functional_set %>
+  </div>
+  <div class="field">
+    <%= f.label :intended_reps %><br />
+    <%= f.text_field :intended_reps %>
+  </div>
+  <div class="field">
+    <%= f.label :scenario_file %><br />
+    <%= f.text_field :scenario_file %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

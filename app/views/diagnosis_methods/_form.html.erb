@@ -1,0 +1,21 @@
+<%= form_for(@diagnosis_method) do |f| %>
+  <% if @diagnosis_method.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@diagnosis_method.errors.count, "error") %> prohibited this diagnosis_method from being saved:</h2>
+
+      <ul>
+      <% @diagnosis_method.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :consensus_method %><br />
+    <%= f.text_field :consensus_method %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Visit:</b>
+  <%= link_to @appointment.visit_number, @appointment.visit unless @appointment.visit.blank? %>
+</p>
+
+<p>
+  <b>Appointment date:</b>
+  <%= @appointment.appointment_date %>
+</p>
+
+<p>
+  <b>Appointment comment:</b>
+  <%= @appointment.appointment_comment %>
+</p>
+
+<p>
+  <b>Researcher:</b>
+  <%= link_to @appointment.researcher_initials, @appointment.researcher unless @appointment.researcher.blank? %>
+</p>
+
+<!-- Show MRI Details -->
+<%= render @appointment.mri_scan unless @appointment.mri_scan.blank? %>
+
+<!-- Show Appointment Details -->
+<%= render @appointment.scan_tasks %>
+
+
+<%= link_to 'Edit', edit_appointment_path(@appointment) %> |
+<%= link_to 'Back', appointments_path %>

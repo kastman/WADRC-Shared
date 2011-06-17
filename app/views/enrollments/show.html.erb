@@ -1,0 +1,38 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Participant:</b>
+  <%= link_to @enrollment.participant_initials, @enrollment.participant unless @enrollment.participant.blank? %>
+</p>
+
+<p>
+  <b>Enroll date:</b>
+  <%= @enrollment.enroll_date %>
+</p>
+
+<p>
+  <b>Enumber:</b>
+  <%= @enrollment.enumber %>
+</p>
+
+<p>
+  <b>Recruitment source:</b>
+  <%= @enrollment.recruitment_source %>
+</p>
+
+<p>
+  <b>Withdrawl reason:</b>
+  <%= @enrollment.withdrawl_reason %>
+</p>
+<p>
+	<b>Visits:</b>
+	<ul>
+	<% @enrollment.visits.each do |v| %>
+		<li><%= link_to "#{v.visit_number} - #{v.visit_date}", v %></li>
+	<% end %>
+	</ul>
+</p>
+
+
+<%= link_to 'Edit', edit_enrollment_path(@enrollment) %> |
+<%= link_to 'Back', enrollments_path %>

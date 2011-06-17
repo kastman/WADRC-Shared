@@ -1,0 +1,90 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Appointment:</b>
+  <%= @mri_scan.appointment %>
+</p>
+
+<p>
+  <b>Exam number:</b>
+  <%= @mri_scan.exam_number %>
+</p>
+
+<p>
+  <b>Study initials:</b>
+  <%= @mri_scan.study_initials %>
+</p>
+
+<p>
+  <b>Study rmr:</b>
+  <%= @mri_scan.study_rmr %>
+</p>
+
+<p>
+  <b>Radiology outcome:</b>
+  <%= @mri_scan.radiology_outcome %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%= @mri_scan.notes %>
+</p>
+
+<p>
+  <b>Dicom dvd:</b>
+  <%= @mri_scan.dicom_dvd %>
+</p>
+
+<p>
+  <b>Researcher:</b>
+  <%= @mri_scan.researcher %>
+</p>
+
+<p>
+  <b>Study path:</b>
+  <%= @mri_scan.study_path %>
+</p>
+
+<p>
+  <b>Created by:</b>
+  <%= @mri_scan.created_by %>
+</p>
+
+<p>
+  <b>Dicom study uid:</b>
+  <%= @mri_scan.dicom_study_uid %>
+</p>
+
+<p>
+  <b>Study scan tech:</b>
+  <%= @mri_scan.study_scan_tech %>
+</p>
+
+<p>
+  <b>Study start time:</b>
+  <%= @mri_scan.study_start_time %>
+</p>
+
+<p>
+  <b>Study end time:</b>
+  <%= @mri_scan.study_end_time %>
+</p>
+
+<p>
+  <b>scanner_hardware goggles:</b>
+  <%= @mri_scan.scanner_hardware_goggles %>
+</p>
+
+<p>
+  <b>scanner_hardware buttonbox:</b>
+  <%= @mri_scan.scanner_hardware_buttonbox %>
+</p>
+
+<p>
+  <b>Completed fast:</b>
+  <%= @mri_scan.completed_fast %>
+</p>
+
+
+<%= link_to 'Edit', edit_mri_scan_path(@mri_scan) %> |
+<%= link_to 'Back', mri_scans_path %>

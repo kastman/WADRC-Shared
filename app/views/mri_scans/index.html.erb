@@ -1,0 +1,56 @@
+<h1>Listing mri_scans</h1>
+
+<table>
+	<tfoot><tr><td colspan="5"><%= paginate @mri_scans %></td></tr></tfoot>
+  <tr>
+    <th>Appointment</th>
+    <th>Exam number</th>
+    <th>Study initials</th>
+    <th>Study rmr</th>
+    <th>Radiology outcome</th>
+    <th>Notes</th>
+    <th>Dicom dvd</th>
+    <th>Researcher</th>
+    <th>Study path</th>
+    <th>Created by</th>
+    <th>Dicom study uid</th>
+    <th>Study scan tech</th>
+    <th>Study start time</th>
+    <th>Study end time</th>
+    <th>scanner_hardware goggles</th>
+    <th>scanner_hardware buttonbox</th>
+    <th>Completed fast</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @mri_scans.each do |mri_scan| %>
+  <tr>
+    <td><%= link_to mri_scan.appointment_date, mri_scan.appointment unless mri_scan.appointment.blank?  %></td>
+    <td><%= mri_scan.exam_number %></td>
+    <td><%= mri_scan.study_initials %></td>
+    <td><%= mri_scan.study_rmr %></td>
+    <td><%= mri_scan.radiology_outcome %></td>
+    <td><%= mri_scan.notes %></td>
+    <td><%= mri_scan.dicom_dvd %></td>
+    <td><%= link_to mri_scan.researcher_initials, mri_scan.researcher unless mri_scan.researcher.blank? %></td>
+    <td><%= mri_scan.study_path %></td>
+    <td><%= mri_scan.created_by %></td>
+    <td><%= mri_scan.dicom_study_uid %></td>
+    <td><%= link_to mri_scan.study_scan_tech_initials, mri_scan.study_scan_tech unless mri_scan.study_scan_tech.blank? %></td>
+    <td><%= mri_scan.study_start_time %></td>
+    <td><%= mri_scan.study_end_time %></td>
+    <td><%= mri_scan.scanner_hardware_goggles %></td>
+    <td><%= mri_scan.scanner_hardware_buttonbox %></td>
+    <td><%= mri_scan.completed_fast %></td>
+    <td><%= link_to 'Show', mri_scan %></td>
+    <td><%= link_to 'Edit', edit_mri_scan_path(mri_scan) %></td>
+    <td><%= link_to 'Destroy', mri_scan, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Mri scan', new_mri_scan_path %>

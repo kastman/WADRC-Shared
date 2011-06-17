@@ -1,0 +1,26 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Visit number:</b>
+  <%= @visit.visit_number %>
+</p>
+
+<p>
+  <b>Scan note:</b>
+  <%= @visit.scan_note %>
+</p>
+<%= render :partial => 'enrollments/enrollments_ul', :object => @visit.enrollments %>
+<% unless @visit.appointments.blank? %>
+	<%= render :partial => 'appointments/appointments_ul', :object => @visit.appointments %>
+<% else %>
+	<h2>No Appointments found.</h2>
+<% end %>
+
+<% unless @visit.diagnoses.blank? %>
+	<%= render @visit.visit_diagnoses  %>
+<% else %>
+	<h2>No Diagnosis (Assumed Healthy Control)</h2>
+<% end %>
+
+<%= link_to 'Edit', edit_visit_path(@visit) %> |
+<%= link_to 'Back', visits_path %>

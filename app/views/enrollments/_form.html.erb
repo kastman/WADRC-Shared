@@ -1,0 +1,39 @@
+<%= semantic_form_for(@enrollment) do |f| %>
+  <% if @enrollment.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@enrollment.errors.count, "error") %> prohibited this enrollment from being saved:</h2>
+
+      <ul>
+      <% @enrollment.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+	<%= f.inputs %>
+	<%= f.buttons %>
+
+  <!-- <div class="field">
+    <%= f.label :participant %><br />
+    <%= f.text_field :participant %>
+  </div>
+  <div class="field">
+    <%= f.label :enroll_date %><br />
+    <%= f.date_select :enroll_date %>
+  </div>
+  <div class="field">
+    <%= f.label :enumber %><br />
+    <%= f.text_field :enumber %>
+  </div>
+  <div class="field">
+    <%= f.label :recruitment_source %><br />
+    <%= f.text_field :recruitment_source %>
+  </div>
+  <div class="field">
+    <%= f.label :withdrawl_reason %><br />
+    <%= f.text_area :withdrawl_reason %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div> -->
+<% end %>

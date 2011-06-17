@@ -1,0 +1,79 @@
+<p>
+  <b>Exam number:</b>
+  <%= mri_scan.exam_number %>
+</p>
+
+<p>
+  <b>Study initials:</b>
+  <%= mri_scan.study_initials %>
+</p>
+
+<p>
+  <b>Study rmr:</b>
+  <%= mri_scan.study_rmr %>
+</p>
+
+<p>
+  <b>Radiology outcome:</b>
+  <%= mri_scan.radiology_outcome %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%= mri_scan.notes %>
+</p>
+
+<p>
+  <b>Dicom dvd:</b>
+  <%= mri_scan.dicom_dvd %>
+</p>
+
+<p>
+  <b>Researcher:</b>
+  <%= link_to mri_scan.researcher_initials, mri_scan.researcher unless mri_scan.researcher.blank?%>
+</p>
+
+<p>
+  <b>Study path:</b>
+  <%= mri_scan.study_path %>
+</p>
+
+<p>
+  <b>Created by:</b>
+  <%= mri_scan.created_by %>
+</p>
+
+<p>
+  <b>Dicom study uid:</b>
+  <%= mri_scan.dicom_study_uid %>
+</p>
+
+<p>
+  <b>Study scan tech:</b>
+  <%= link_to mri_scan.study_scan_tech_initials, mri_scan.study_scan_tech unless mri_scan.study_scan_tech.blank? %>
+</p>
+
+<p>
+  <b>Study start time:</b>
+  <%= mri_scan.study_start_time %>
+</p>
+
+<p>
+  <b>Study end time:</b>
+  <%= mri_scan.study_end_time %>
+</p>
+
+<p>
+  <b>scanner_hardware goggles:</b>
+  <%= mri_scan.scanner_hardware_goggles.name %>
+</p>
+
+<p>
+  <b>scanner_hardware buttonbox:</b>
+  <%= mri_scan.scanner_hardware_buttonbox.name %>
+</p>
+
+<p>
+  <b>Completed fast:</b>
+  <%= mri_scan.completed_fast %>
+</p>

@@ -1,0 +1,2 @@
+module DiagnosisMethodsHelper
+end

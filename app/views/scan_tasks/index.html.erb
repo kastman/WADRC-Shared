@@ -1,0 +1,40 @@
+<h1>Listing scan_tasks</h1>
+
+<table>
+	<tfoot><tr><td colspan="12"><%= paginate @scan_tasks %></td></tr></tfoot>
+  <tr>
+    <th>Appointment</th>
+    <th>Functional scenario</th>
+    <th>Scan series</th>
+    <th>Series order</th>
+    <th>Preday order</th>
+    <th>Pfile</th>
+    <th>Has concerns</th>
+    <th>Concerns</th>
+    <th>Functional note</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @scan_tasks.each do |scan_task| %>
+  <tr>
+    <td><%= link_to scan_task.appointment_date, scan_task.appointment unless scan_task.appointment.blank? %></td>
+    <td><%= link_to scan_task.functional_scenario.description, scan_task.functional_scenario %></td>
+    <td><%= scan_task.scan_series %></td>
+    <td><%= scan_task.series_order %></td>
+    <td><%= scan_task.preday_order %></td>
+    <td><%= scan_task.pfile %></td>
+    <td><%= scan_task.has_concerns %></td>
+    <td><%= scan_task.concerns %></td>
+    <td><%= scan_task.functional_note %></td>
+    <td><%= link_to 'Show', scan_task %></td>
+    <td><%= link_to 'Edit', edit_scan_task_path(scan_task) %></td>
+    <td><%= link_to 'Destroy', scan_task, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Scan task', new_scan_task_path %>

@@ -1,0 +1,53 @@
+<h1>Listing participants</h1>
+
+<table>
+	<tfoot><tr><td colspan="8"><%= paginate @participants %></td></tr></tfoot>
+  <tr>
+    <th><%= sort_link @search, :reggieid %></th>
+    <th><%= sort_link @search, :initials %></th>
+    <th><%= sort_link @search, :wrapnum %></th>
+		<th><%= sort_link @search, :enrollments_enumber %></th>
+		<th>Total Enrollments (visits)</th>
+		<th>Visits</th>
+    <th>Notes</th>
+    <th><%= sort_link @search, :quality_redflag %></th>
+  </tr>
+
+<% @participants.each do |participant| %>
+  <tr>
+    <td><%= link_to participant.reggieid, participant %></td>
+    <td><%= link_to participant.initials, participant %></td>
+    <td><%= participant.wrapnum %></td>
+		<td><%= participant.enrollments.collect{|e| link_to e.enumber, e}.join(', ').html_safe %></td>
+		<td><%= participant.enrollments.count %> (<%= participant.enrollment_visit_memberships.count %>)</td>
+		<td><%= participant.enrollment_visit_memberships.visits.collect{|v| link_to v.visit_date, v}.join(', ').html_safe %></td>
+    <td><%= participant.notes %></td>
+    <td><%= participant.quality_redflag %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Participant', new_participant_path %>
+<%= link_to 'CSV', participants_path(:format => :csv, :search => params[:search]) %>
+
+<%= form_for @search do |f| %>
+	<p>
+		<%= f.label :reggieid_eq %>
+		<%= f.text_field :reggieid_eq %>
+	</p>
+	<p>
+		<%= f.label :initials_like %>
+		<%= f.text_field :initials_like %>
+	</p>
+	<p>
+		<%= f.label :wrapnum_eq %>
+		<%= f.text_field :wrapnum_eq %>
+	</p>
+	<p>
+		<%= f.label :enrollments_enumber_like %>
+		<%= f.text_field :enrollments_enumber_like %>
+	</p>
+	<p class="button"><%= f.submit "Search" %></p>
+<% end %>

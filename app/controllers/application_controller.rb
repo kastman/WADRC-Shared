@@ -1,0 +1,11 @@
+class ApplicationController < ActionController::Base
+  protect_from_forgery
+  
+  def default_search(klass)
+    if !params[:search].blank? && !params[:search][:meta_sort].blank?
+      klass.unscoped.search(params[:search])
+    else
+      klass.search(params[:search])
+    end
+  end
+end

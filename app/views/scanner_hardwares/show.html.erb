@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @scanner_hardware.name %>
+</p>
+
+<p>
+  <b>Hardware group:</b>
+  <%= @scanner_hardware.hardware_group %>
+</p>
+
+
+<%= link_to 'Edit', edit_scanner_hardware_path(@scanner_hardware) %> |
+<%= link_to 'Back', scanner_hardwares_path %>

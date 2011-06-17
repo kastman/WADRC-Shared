@@ -1,0 +1,13 @@
+<p id="notice"><%= notice %></p>
+
+<h2><%= "%s %s (%s)" % [@researcher.first, @researcher.last, @researcher.initials] %></h2>
+
+<h3><%= pluralize @researcher.appointments.count, "Appointment" %></h3>
+<ul>
+<% @researcher.appointments.sort_by(&:appointment_date).each do |appointment| %>
+	<li><%= link_to "#{appointment.appointment_date} - #{appointment.enumbers}", appointment unless appointment.visit.blank? %></li>
+<% end %>
+</ul>
+
+<%= link_to 'Edit', edit_researcher_path(@researcher) %> |
+<%= link_to 'Back', researchers_path %>

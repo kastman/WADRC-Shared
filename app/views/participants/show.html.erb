@@ -1,0 +1,40 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Initials:</b>
+  <%= @participant.initials %>
+</p>
+
+<p>
+  <b>Wrapnum:</b>
+  <%= @participant.wrapnum %>
+</p>
+
+<p>
+  <b>Reggieid:</b>
+  <%= @participant.reggieid %>
+</p>
+
+<p>
+  <b>Notes:</b>
+  <%= @participant.notes %>
+</p>
+
+<p>
+  <b>Quality redflag:</b>
+  <%= @participant.quality_redflag %>
+</p>
+
+<%= render :partial => 'enrollments/enrollments_ul', :object => @participant.enrollments %>
+
+<table>
+	<thead><tr><th colspan="2">Demographics</th></tr></thead>
+	<tr><td>Sex:</td><td><%= @participant.sex  %></td></tr>
+	<tr><td>Race:</td><td><%= @participant.race_name  %></td></tr>
+	<tr><td>DOB:</td><td><%= @participant.dob  %></td></tr>
+	<tr><td>Handedness:</td><td><%= @participant.handedness  %></td></tr>
+</table>
+
+
+<%= link_to 'Edit', edit_participant_path(@participant) %> |
+<%= link_to 'Back', participants_path %>

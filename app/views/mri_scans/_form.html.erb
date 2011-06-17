@@ -1,0 +1,85 @@
+<%= form_for(@mri_scan) do |f| %>
+  <% if @mri_scan.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@mri_scan.errors.count, "error") %> prohibited this mri_scan from being saved:</h2>
+
+      <ul>
+      <% @mri_scan.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :appointment %><br />
+    <%= f.text_field :appointment %>
+  </div>
+  <div class="field">
+    <%= f.label :exam_number %><br />
+    <%= f.text_field :exam_number %>
+  </div>
+  <div class="field">
+    <%= f.label :study_initials %><br />
+    <%= f.text_field :study_initials %>
+  </div>
+  <div class="field">
+    <%= f.label :study_rmr %><br />
+    <%= f.text_field :study_rmr %>
+  </div>
+  <div class="field">
+    <%= f.label :radiology_outcome %><br />
+    <%= f.text_field :radiology_outcome %>
+  </div>
+  <div class="field">
+    <%= f.label :notes %><br />
+    <%= f.text_area :notes %>
+  </div>
+  <div class="field">
+    <%= f.label :dicom_dvd %><br />
+    <%= f.text_field :dicom_dvd %>
+  </div>
+  <div class="field">
+    <%= f.label :researcher %><br />
+    <%= f.text_field :researcher %>
+  </div>
+  <div class="field">
+    <%= f.label :study_path %><br />
+    <%= f.text_field :study_path %>
+  </div>
+  <div class="field">
+    <%= f.label :created_by %><br />
+    <%= f.text_field :created_by %>
+  </div>
+  <div class="field">
+    <%= f.label :dicom_study_uid %><br />
+    <%= f.text_field :dicom_study_uid %>
+  </div>
+  <div class="field">
+    <%= f.label :study_scan_tech %><br />
+    <%= f.text_field :study_scan_tech %>
+  </div>
+  <div class="field">
+    <%= f.label :study_start_time %><br />
+    <%= f.datetime_select :study_start_time %>
+  </div>
+  <div class="field">
+    <%= f.label :study_end_time %><br />
+    <%= f.datetime_select :study_end_time %>
+  </div>
+  <div class="field">
+    <%= f.label :scanner_hardware_goggles %><br />
+    <%= f.text_field :scanner_hardware_goggles %>
+  </div>
+  <div class="field">
+    <%= f.label :scanner_hardware_buttonbox %><br />
+    <%= f.text_field :scanner_hardware_buttonbox %>
+  </div>
+  <div class="field">
+    <%= f.label :completed_fast %><br />
+    <%= f.check_box :completed_fast %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

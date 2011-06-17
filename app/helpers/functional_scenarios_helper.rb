@@ -1,0 +1,2 @@
+module FunctionalScenariosHelper
+end

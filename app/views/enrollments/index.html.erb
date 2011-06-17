@@ -1,0 +1,28 @@
+<h1>Listing enrollments</h1>
+
+<table>
+	<tfoot><tr><td colspan="8"><%= paginate @enrollments %></td></tr></tfoot>
+  <tr>
+    <th><%= sort_link @search, :enumber %></th>
+    <th><%= sort_link @search, :participant_reggieid, "Participant" %></th>
+		<th>Number of Visits</th>
+    <th><%= sort_link @search, :enroll_date %></th>
+    <th><%= sort_link @search, :recruitment_source %></th>
+    <th><%= sort_link @search, :withdrawl_reason %></th>
+  </tr>
+
+<% @enrollments.each do |enrollment| %>
+  <tr>
+    <td><%= link_to enrollment.enumber, enrollment %></td>
+    <td><%= link_to "#{enrollment.participant_reggieid} (#{enrollment.participant_initials})", enrollment.participant unless enrollment.participant.blank? %></td>
+    <td><%= enrollment.visits.count %></td>
+    <td><%= enrollment.enroll_date %></td>
+    <td><%= enrollment.recruitment_source %></td>
+    <td><%= enrollment.withdrawl_reason %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Enrollment', new_enrollment_path %>
