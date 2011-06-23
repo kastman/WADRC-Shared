@@ -2,7 +2,8 @@
 	<th><%= link_to series.order, series %> (<%= series.id %>)</th>
 	<td><%= series.formatted_pfile %></td>
 	<td><%= series.series_metainfo.series_description unless series.series_metainfo.blank? %> (<%= series.series_metainfo.id unless series.series_metainfo.blank? %>)</td>
-	<td><%= link_to series.description, series.series_log_item unless series.series_log_item.blank? %> (<%= series.series_log_item.id unless series.series_log_item.blank? %>)</td>
-	<td><%= link_to series.series_log_item.functional_scenario.setname unless series.series_log_item.blank? %></td>
+	<td><%= link_to series.pulse_sequence.description, series.pulse_sequence unless series.pulse_sequence.blank? %> (<%= series.pulse_sequence.id unless series.pulse_sequence.blank? %>)</td>
+	<td><%= series.scan_task.description unless series.scan_task.blank? %></td>
+	<td><%= link_to series.series_log_items.collect {|item| link_to "#{item.description} (#{item.setname})"}.join(", ").html_safe %></td>
 	<td><%= display_agreement(series.series_detail_agreement) unless series.series_detail_agreement.blank? %></td>
 </tr>

@@ -6,22 +6,27 @@ class Series < ActiveRecord::Base
     :format => {:with => /\d{5}/, :allow_blank => :true}, 
     :uniqueness => {:scope => :appointment, :allow_nil => :true}
   
-  has_one :series_log_item, :dependent => :destroy
   has_one :series_metainfo, :dependent => :destroy
+  has_many :series_log_items, :dependent => :destroy
+
+  has_one :pulse_sequence, :class_name => "SeriesLogItem", :include => :functional_scenario, :conditions => "`functional_scenarios`.`functional_set_id` = 8", :dependent => :destroy
+  has_one :scan_task, :class_name => "SeriesLogItem", :include => :functional_scenario, :conditions => "`functional_scenarios`.`functional_set_id` = 3", :dependent => :destroy
   
   delegate :appointment_date, :to => :appointment
   delegate :description, :to => :series_log_item
   delegate :setname, :to => :series_log_item
   
-  scope :pulse_series_by_log_items, joins(:series_log_item => :functional_scenario).where(:series_log_item => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("Pulse Sequence")}})
+  scope :with_pulse_sequences, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("Pulse Sequence")}})
+  scope :with_scan_tasks, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("In-Scan Task")}})
+  scope :with_pulses_or_tasks, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => [3,8]}})
   
   def formatted_pfile
     pfile && "P%05i.7" % pfile
   end
   
   def series_detail_agreement
-    if series_metainfo.present? && series_log_item.present? && series_log_item.functional_scenario.present?
-      Levenshtein.normalized_distance(series_metainfo.series_description.downcase,series_log_item.description.downcase)
+    if series_metainfo.present? && pulse_sequence.present? && pulse_sequence.functional_scenario.present?
+      Levenshtein.normalized_distance(series_metainfo.series_description.downcase, pulse_sequence.description.downcase)
     end
   end
   

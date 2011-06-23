@@ -12,7 +12,7 @@ describe AppointmentsController do
 
   describe "GET index" do
     it "assigns all appointments as @appointments" do
-      Appointment.stub_chain(:search, :relation, :page) { [mock_appointment] }
+      Appointment.stub_chain(:search, :relation, :includes, :page) { [mock_appointment] }
       get :index
       assigns(:appointments).should eq([mock_appointment])
     end

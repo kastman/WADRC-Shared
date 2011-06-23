@@ -13,7 +13,10 @@ class Appointment < ActiveRecord::Base
   has_many :series
   has_many :series_metainfos, :through => :series
   has_many :series_log_items, :through => :series
-  
+
+  has_many :scan_tasks, :through => :series
+  has_many :pulse_sequences, :through => :series
+    
   acts_as_reportable :except => [:created_at, :updated_at]
   
   def total_series_description_agreement
