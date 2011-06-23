@@ -3,7 +3,7 @@ class AppointmentsController < ApplicationController
   # GET /appointments.xml
   def index
     @search = default_search(Appointment)
-    @appointments = @search.relation.page(params[:page])
+    @appointments = @search.relation.includes(:visit, :series => [:series_metainfo, {:series_log_item => :functional_scenario}]).page(params[:page])
 
     respond_to do |format|
       format.html # index.html.erb

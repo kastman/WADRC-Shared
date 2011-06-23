@@ -37,7 +37,7 @@
 		<th>Description Agreement</th>
 	</tr>
 <%= render @series %>
-	<tfoot><tr><td colspan="5">Total Agreement:</td><td><%= "%.3f" % @appointment.total_series_description_agreement unless @appointment.total_series_description_agreement.blank?  %></td></tr></tfoot>
+	<tfoot><tr><td colspan="5">Total Agreement:</td><td><%= display_agreement(@appointment.total_series_description_agreement) unless @appointment.total_series_description_agreement.blank?  %></td></tr></tfoot>
 </table>
 
 

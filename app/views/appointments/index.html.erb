@@ -25,7 +25,7 @@
 		<td><%= appointment.series.count %></td>
 		<td><%= appointment.series_metainfos.count %></td>
 		<td><%= appointment.series_log_items.count %></td>
-		<td><%= "%3f" % appointment.total_series_description_agreement unless appointment.total_series_description_agreement.blank?  %></td>
+		<td><%= display_agreement(appointment.total_series_description_agreement) unless appointment.total_series_description_agreement.blank?  %></td>
     <td><%= link_to 'Show', appointment %></td>
     <td><%= link_to 'Edit', edit_appointment_path(appointment) %></td>
     <td><%= link_to 'Destroy', appointment, :confirm => 'Are you sure?', :method => :delete %></td>

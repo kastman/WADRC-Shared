@@ -1,6 +1,12 @@
 nav ul {list-style: none; padding: 0;}
 nav li {float: left; margin-right: 5px;}
 
+.good_agreement {color: #57bd63;}
+.passable_agreement {color: #d6a617;}
+.bad_agreement {color: #d61717;}
+
+/* SimpleForm Styles */
+
 .simple_form label {
   float: left;
   width: 100px;
