@@ -1,0 +1,23 @@
+<%= simple_form_for(@series_log_item) do |f| %>
+  <% if @series_log_item.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@series_log_item.errors.count, "error") %> prohibited this series from being saved:</h2>
+
+      <ul>
+      <% @series_log_item.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+	<%= f.association :series, :collection => @series_log_item.related_series, :label_method => :order %>
+	<%= f.association :functional_scenario, :label_method => :description %>
+	<%= f.input :logfile %>
+	<%= f.input :has_concerns %>
+	<%= f.input :comment %>
+	
+	<%= f.input :preferred_series_id, :collection => @series_log_item.related_series, :label_method => :order %>
+	
+	<%= f.button :submit %>
+<% end %>

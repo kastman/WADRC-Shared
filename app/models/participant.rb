@@ -15,6 +15,10 @@ class Participant < ActiveRecord::Base
   
   acts_as_reportable :except => [:created_at, :updated_at]
   
+  def reggie_initials
+    "%s - %s" % [reggieid, initials]
+  end
+  
   def self.report(participants)
     table = Ruport::Data::Table.new(:column_names => participants.first.attributes.keys)
     participants.each do |p|

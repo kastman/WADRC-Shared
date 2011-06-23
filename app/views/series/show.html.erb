@@ -1,0 +1,22 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Appointment:</b>
+  <%= link_to @series.appointment_date, @series.appointment %>
+</p>
+
+<p>
+  <b>Order:</b>
+  <%= @series.order %>
+</p>
+
+<p>
+  <b>Pfile:</b>
+  <%= @series.pfile %>
+</p>
+
+<%#= render @series.series_log_item unless @series.series_log_item.blank? %>
+<%#= render @series.series_metainfo unless @series.series_metainfo.blank? %>
+
+<%= link_to 'Edit', edit_series_path(@series) %> |
+<%= link_to 'Back', series_index_path %>

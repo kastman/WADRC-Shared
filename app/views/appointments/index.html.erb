@@ -7,6 +7,10 @@
     <th>Appointment date</th>
     <th>Appointment comment</th>
     <th>Researcher</th>
+		<th>Series</th>
+		<th>Metainfos</th>
+		<th>ScanLogs</th>
+		<th>Desc. Agreement</th>
     <th></th>
     <th></th>
     <th></th>
@@ -18,6 +22,10 @@
     <td><%= appointment.appointment_date %></td>
     <td><%= appointment.appointment_comment %></td>
     <td><%= link_to appointment.researcher_initials, appointment.researcher unless appointment.researcher.blank? %></td>
+		<td><%= appointment.series.count %></td>
+		<td><%= appointment.series_metainfos.count %></td>
+		<td><%= appointment.series_log_items.count %></td>
+		<td><%= "%3f" % appointment.total_series_description_agreement unless appointment.total_series_description_agreement.blank?  %></td>
     <td><%= link_to 'Show', appointment %></td>
     <td><%= link_to 'Edit', edit_appointment_path(appointment) %></td>
     <td><%= link_to 'Destroy', appointment, :confirm => 'Are you sure?', :method => :delete %></td>
@@ -28,3 +36,15 @@
 <br />
 
 <%= link_to 'New Appointment', new_appointment_path %>
+
+<%= form_for @search do |f| %>
+	<p>
+		<%= f.label :appointment_date_eq %>
+		<%= f.text_field :appointment_date_eq %>
+	</p>
+	<p>
+		<%= f.label :mri_scan_study_rmr_like %>
+		<%= f.text_field :mri_scan_study_rmr_like %>
+	</p>
+	<p class="button"><%= f.submit "Search" %></p>
+<% end %>

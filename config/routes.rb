@@ -1,5 +1,7 @@
 PandaShared::Application.routes.draw do
-  resources :scan_tasks
+  resources :series_log_item
+
+  resources :series
 
   resources :functional_scenarios
 

@@ -9,7 +9,12 @@
   <b>Scan note:</b>
   <%= @visit.scan_note %>
 </p>
+<% unless @visit.enrollments.blank? %>
 <%= render :partial => 'enrollments/enrollments_ul', :object => @visit.enrollments %>
+<% else %>
+<h2>No Enrollments found.</h2>
+<% end %>
+
 <% unless @visit.appointments.blank? %>
 	<%= render :partial => 'appointments/appointments_ul', :object => @visit.appointments %>
 <% else %>

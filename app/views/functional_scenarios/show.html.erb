@@ -21,10 +21,10 @@
 </p>
 
 <p>
-	<b><%= pluralize @functional_scenario.scan_tasks.count, "Scan Task" %>:</b><br/>
+	<b><%= pluralize @functional_scenario.series_log_items.count, "Series Log Item" %>:</b><br/>
 	<ul>
-		<% @functional_scenario.scan_tasks.each do |task| %>
-			<li><%= link_to task.series_order, task %>: <%= link_to task.appointment_date, task.appointment unless task.appointment.blank?  %></li>
+		<% @functional_scenario.series_log_items.each do |item| %>
+			<li><%= link_to item.order, item.series %>: <%= item.description  %></li>
 		<% end %>
 	</ul>
 </p>

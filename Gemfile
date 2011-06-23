@@ -11,8 +11,9 @@ gem 'meta_where', '~> 1.0.4'
 gem 'meta_search', '~> 1.0.5'
 gem 'ruport', :git => 'https://github.com/ruport/ruport.git', :branch => 'master'
 gem 'acts_as_reportable', '~> 1.1.1'
-gem 'formtastic', '~> 2.0.0.rc1'
-
+gem 'simple_form', '~>1.4.1'
+gem 'wherex', '~>1.0.0'
+gem 'levenshtein'
 
 # Use unicorn as the web server
 # gem 'unicorn'

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110614214309) do
+ActiveRecord::Schema.define(:version => 20110620174124) do
 
   create_table "appointments", :force => true do |t|
     t.integer  "visit_id",            :null => false
@@ -89,6 +89,25 @@ ActiveRecord::Schema.define(:version => 20110614214309) do
     t.datetime "updated_at"
   end
 
+  create_table "image_datasets", :force => true do |t|
+    t.string   "rmr",                                               :null => false
+    t.string   "series_description",                                :null => false
+    t.string   "path",                                              :null => false
+    t.integer  "appointment_id"
+    t.string   "dicom_glob"
+    t.decimal  "rep_time",           :precision => 10, :scale => 0
+    t.integer  "bold_reps"
+    t.string   "scanned_file"
+    t.string   "thumbnail"
+    t.string   "dicom_series_uid"
+    t.text     "dicom_taghash"
+    t.datetime "timestamp"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "image_datasets", ["appointment_id"], :name => "appointment_id"
+
   create_table "mri_scans", :force => true do |t|
     t.integer  "appointment_id",                :null => false
     t.string   "study_rmr",                     :null => false
@@ -163,6 +182,52 @@ ActiveRecord::Schema.define(:version => 20110614214309) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "series", :force => true do |t|
+    t.integer  "appointment_id", :null => false
+    t.integer  "order",          :null => false
+    t.integer  "pfile"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "series", ["appointment_id"], :name => "appointment_id"
+
+  create_table "series_log_items", :force => true do |t|
+    t.integer  "series_id",              :null => false
+    t.integer  "functional_scenario_id"
+    t.string   "logfile"
+    t.boolean  "has_concerns"
+    t.string   "comment"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "series_log_items", ["series_id"], :name => "series_id"
+  add_index "series_log_items", ["functional_scenario_id"], :name => "functional_scenario_id"
+
+  create_table "series_metainfos", :force => true do |t|
+    t.integer  "series_id",                                             :null => false
+    t.string   "rmr",                                                   :null => false
+    t.string   "series_description",                                    :null => false
+    t.string   "path",                                                  :null => false
+    t.datetime "timestamp",                                             :null => false
+    t.string   "scanned_file",                                          :null => false
+    t.string   "glob"
+    t.decimal  "rep_time",               :precision => 10, :scale => 0
+    t.integer  "bold_reps"
+    t.integer  "slices_per_volume"
+    t.string   "thumbnail_file_name"
+    t.string   "thumbnail_content_type"
+    t.integer  "thumbnail_file_size"
+    t.datetime "thumbnail_updated_at"
+    t.string   "dicom_series_uid"
+    t.text     "dicom_taghash"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "series_metainfos", ["series_id"], :name => "series_id"
 
   create_table "visit_diagnoses", :force => true do |t|
     t.integer  "diagnosis_id",        :null => false

@@ -1,5 +1,8 @@
 <p id="notice"><%= notice %></p>
-
+<p>
+	<b>Enrollments:</b>
+	<%= @appointment.enumbers %>
+</p>
 <p>
   <b>Visit:</b>
   <%= link_to @appointment.visit_number, @appointment.visit unless @appointment.visit.blank? %>
@@ -24,7 +27,19 @@
 <%= render @appointment.mri_scan unless @appointment.mri_scan.blank? %>
 
 <!-- Show Appointment Details -->
-<%= render @appointment.scan_tasks %>
+<table>
+	<tr>
+		<th>Order</th>
+		<th>Pfile</th>
+		<th>Metainfo</th>
+		<th>ScanLog</th>
+		<th>Setname</th>
+		<th>Description Agreement</th>
+	</tr>
+<%= render @series %>
+	<tfoot><tr><td colspan="5">Total Agreement:</td><td><%= "%.3f" % @appointment.total_series_description_agreement unless @appointment.total_series_description_agreement.blank?  %></td></tr></tfoot>
+</table>
+
 
 
 <%= link_to 'Edit', edit_appointment_path(@appointment) %> |

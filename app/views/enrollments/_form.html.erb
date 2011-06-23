@@ -1,4 +1,4 @@
-<%= semantic_form_for(@enrollment) do |f| %>
+<%= simple_form_for(@enrollment) do |f| %>
   <% if @enrollment.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@enrollment.errors.count, "error") %> prohibited this enrollment from being saved:</h2>
@@ -10,30 +10,36 @@
       </ul>
     </div>
   <% end %>
-	<%= f.inputs %>
-	<%= f.buttons %>
+
+  <%= f.association :participant, :label_method => :reggie_initials %>
+  <%= f.input :enroll_date %>
+  <%= f.input :enumber %>
+  <%= f.input :recruitment_source %>
+	<%= f.input :withdrawl_reason %>
+
+	<%= f.button :submit %>
 
   <!-- <div class="field">
-    <%= f.label :participant %><br />
-    <%= f.text_field :participant %>
+    <%#= f.label :participant %><br />
+    <%#= f.text_field :participant %>
   </div>
   <div class="field">
-    <%= f.label :enroll_date %><br />
-    <%= f.date_select :enroll_date %>
+    <%#= f.label :enroll_date %><br />
+    <%#= f.date_select :enroll_date %>
   </div>
   <div class="field">
-    <%= f.label :enumber %><br />
-    <%= f.text_field :enumber %>
+    <%#= f.label :enumber %><br />
+    <%#= f.text_field :enumber %>
   </div>
   <div class="field">
-    <%= f.label :recruitment_source %><br />
-    <%= f.text_field :recruitment_source %>
+    <%#= f.label :recruitment_source %><br />
+    <%#= f.text_field :recruitment_source %>
   </div>
   <div class="field">
-    <%= f.label :withdrawl_reason %><br />
-    <%= f.text_area :withdrawl_reason %>
+    <%#= f.label :withdrawl_reason %><br />
+    <%#= f.text_area :withdrawl_reason %>
   </div>
   <div class="actions">
-    <%= f.submit %>
+    <%#= f.submit %>
   </div> -->
 <% end %>

@@ -14,6 +14,7 @@ describe "appointments/index.html.erb" do
     #     :researcher => nil
     #   )
     # ])
+    assign(:search, Appointment.search)
   end
 
   it "renders a list of appointments" do

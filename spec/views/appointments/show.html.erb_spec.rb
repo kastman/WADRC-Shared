@@ -3,11 +3,7 @@ require 'spec_helper'
 describe "appointments/show.html.erb" do
   before(:each) do
     @appointment = assign(:appointment, Factory(:appointment))
-    # stub_model(Appointment,
-    #       :visit => nil,
-    #       :appointment_comment => "MyText",
-    #       :researcher => nil
-    #     ))
+    @series = assign(:series, @appointment.series)
   end
 
   it "renders attributes in <p>" do
