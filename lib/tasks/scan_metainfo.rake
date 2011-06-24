@@ -6,36 +6,8 @@ namespace :metainfo do
   task(:assign => :environment) do
     errors = []
     SeriesMetainfo.find_each do |info|
-      position = info.infer_position
-      conditions = {:appointment => {:mri_scans => {:study_rmr => info.rmr }}}
-      
-      conditions[:order] = position unless position.blank?
-      conditions[:pfile] = info.pfile? ? info.pfile_digits : nil
-      
-      series = Series.joins(:appointment => :mri_scan).where(conditions).first
-      pp series unless series.blank?
-        
-      unless series.blank?
-        info.series = series
-        if info.changed?
-          unless info.save
-            errors << [info, info.errors]
-          end
-        end
-      else
-        appointment = Appointment.joins(:mri_scan).where(:mri_scans => {:study_rmr => info.rmr}).first
-        if appointment.blank?
-          puts "Can't find appointment with mri visit with rmr: #{info.rmr}"
-        else
-          # pp appointment
-          # pp info
-          new_series = appointment.series.build(:order => position, :series_metainfo => info)
-          unless new_series.save
-            errors << [info, new_series.errors]
-            puts "Errors: ", errors.size
-          end
-        end
-      end
+      results = info.associate_with_related_series
+      errors << results unless results.blank?
     end
     
     pp errors

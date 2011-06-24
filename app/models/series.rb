@@ -1,4 +1,9 @@
 class Series < ActiveRecord::Base
+  TASK_FUNCTIONAL_SET_IDS = [
+      FunctionalSet.find_by_setname("In-Scan Task"),
+      FunctionalSet.find_by_setname("Pre"),
+      FunctionalSet.find_by_setname("Post")
+  ].map(&:id)
   belongs_to :appointment
   
   validates_presence_of :appointment, :order
@@ -16,9 +21,16 @@ class Series < ActiveRecord::Base
   delegate :description, :to => :series_log_item
   delegate :setname, :to => :series_log_item
   
-  scope :with_pulse_sequences, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("Pulse Sequence")}})
+  # scope :with_pulse_sequences, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("Pulse Sequence")}})
+  scope :with_pulse_sequences, includes(:series_log_items => :functional_scenario).where(
+    {:series_log_items => { :id => nil}} | 
+    {:series_log_items => { :functional_scenarios => { :functional_set_id.not_in => TASK_FUNCTIONAL_SET_IDS}}}
+  )
   scope :with_scan_tasks, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("In-Scan Task")}})
-  scope :with_pulses_or_tasks, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => [3,8]}})
+  scope :with_pulses_or_tasks, includes(:series_log_items => :functional_scenario).where(
+    {:series_log_items => {:functional_scenarios => {:functional_set_id => [3,8] }}} |
+    {:series_log_items => { :id => nil}}    
+  )
   
   def formatted_pfile
     pfile && "P%05i.7" % pfile
