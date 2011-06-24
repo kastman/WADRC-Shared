@@ -1,0 +1,23 @@
+<h1>Listing series_sets</h1>
+
+<table>
+  <tr>
+    <th>Setname</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @series_sets.each do |series_set| %>
+  <tr>
+    <td><%= series_set.setname %></td>
+    <td><%= link_to 'Show', series_set %></td>
+    <td><%= link_to 'Edit', edit_series_set_path(series_set) %></td>
+    <td><%= link_to 'Destroy', series_set, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Series set', new_series_set_path %>

@@ -89,25 +89,6 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
     t.datetime "updated_at"
   end
 
-  create_table "image_datasets", :force => true do |t|
-    t.string   "rmr",                                               :null => false
-    t.string   "series_description",                                :null => false
-    t.string   "path",                                              :null => false
-    t.integer  "appointment_id"
-    t.string   "dicom_glob"
-    t.decimal  "rep_time",           :precision => 10, :scale => 0
-    t.integer  "bold_reps"
-    t.string   "scanned_file"
-    t.string   "thumbnail"
-    t.string   "dicom_series_uid"
-    t.text     "dicom_taghash"
-    t.datetime "timestamp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "image_datasets", ["appointment_id"], :name => "appointment_id"
-
   create_table "mri_scans", :force => true do |t|
     t.integer  "appointment_id",                :null => false
     t.string   "study_rmr",                     :null => false
@@ -159,23 +140,6 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
     t.datetime "updated_at"
   end
 
-  create_table "scan_tasks", :force => true do |t|
-    t.integer  "appointment_id",         :null => false
-    t.integer  "functional_scenario_id", :null => false
-    t.integer  "scan_series_id"
-    t.integer  "series_order"
-    t.integer  "preday_order"
-    t.string   "pfile"
-    t.boolean  "has_concerns"
-    t.string   "concerns"
-    t.string   "functional_note"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "scan_tasks", ["appointment_id"], :name => "appointment_id"
-  add_index "scan_tasks", ["functional_scenario_id"], :name => "functional_scenario_id"
-
   create_table "scanner_hardwares", :force => true do |t|
     t.string   "name"
     t.string   "hardware_group"
@@ -185,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
 
   create_table "series", :force => true do |t|
     t.integer  "appointment_id", :null => false
+    t.integer  "series_set_id",  :null => false
     t.integer  "order",          :null => false
     t.integer  "pfile"
     t.datetime "created_at"
@@ -192,6 +157,7 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
   end
 
   add_index "series", ["appointment_id"], :name => "appointment_id"
+  add_index "series", ["series_set_id"], :name => "series_set_id"
 
   create_table "series_log_items", :force => true do |t|
     t.integer  "series_id",              :null => false
@@ -228,6 +194,12 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
   end
 
   add_index "series_metainfos", ["series_id"], :name => "series_id"
+
+  create_table "series_sets", :force => true do |t|
+    t.string   "setname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "visit_diagnoses", :force => true do |t|
     t.integer  "diagnosis_id",        :null => false

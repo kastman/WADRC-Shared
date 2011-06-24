@@ -2,6 +2,7 @@ class CreateSeries < ActiveRecord::Migration
   def self.up
     create_table :series do |t|
       t.references :appointment, :null => false
+      t.references :series_set, :null => false
       t.integer :order, :null => false
       t.integer :pfile
 

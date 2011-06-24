@@ -3,10 +3,17 @@ class Series < ActiveRecord::Base
       FunctionalSet.find_by_setname("In-Scan Task"),
       FunctionalSet.find_by_setname("Pre"),
       FunctionalSet.find_by_setname("Post")
-  ].map(&:id)
+  ].reject(&:blank?).map(&:id)
+
   belongs_to :appointment
+  belongs_to :series_set
   
-  validates_presence_of :appointment, :order
+  validates :appointment,
+    :presence => true
+    
+  validates :order,
+    :uniqueness => {:scope => :series_set}
+    
   validates :pfile, 
     :format => {:with => /\d{5}/, :allow_blank => :true}, 
     :uniqueness => {:scope => :appointment, :allow_nil => :true}

@@ -1,0 +1,11 @@
+<%= simple_form_for(@series_set) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="inputs">
+    <%= f.input :setname %>
+  </div>
+
+  <div class="actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

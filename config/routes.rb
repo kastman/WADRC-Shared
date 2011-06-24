@@ -1,4 +1,6 @@
 PandaShared::Application.routes.draw do
+  resources :series_sets
+
   resources :series_log_item
 
   resources :series

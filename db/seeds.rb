@@ -20,3 +20,9 @@ diagnosis_methods = DiagnosisMethod.create([
   {:consensus_method => "Consensus Meeting"},
   {:consensus_method => "Clinician Dx"}
 ])
+
+series_sets = SeriesSet.create([
+  {:setname => "pfile"}, 
+  {:setname => "sequence"}, 
+  {:setname => "computer-task"}
+])
