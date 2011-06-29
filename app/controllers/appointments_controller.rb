@@ -16,10 +16,10 @@ class AppointmentsController < ApplicationController
   def show
     @appointment = Appointment.find(params[:id])
     # @series = @appointment.series.includes(:series_metainfo, :series_log_item => {:functional_scenario => :functional_set}).order("`functional_sets`.`setname` ASC, `order` ASC") # => {:functional_scenario => :functional_set})#.order("functional_sets.setname, series.order")
-    @series = @appointment.series.with_pulses_or_tasks.includes(:series_metainfo, :series_log_items => {:functional_scenario => :functional_set}).order("`pfile` ASC, `order` ASC") # => {:functional_scenario => :functional_set})#.order("functional_sets.setname, series.order")
+    @series = @appointment.series#.with_sequence_set #.with_pulses_or_tasks.includes(:series_metainfo, :series_log_items => {:functional_scenario => :functional_set}).order("`pfile` ASC, `order` ASC") # => {:functional_scenario => :functional_set})#.order("functional_sets.setname, series.order")
     # logger.info @series = @appointment.series.joins("LEFT OUTER JOIN `series_log_items` ON `series_log_items`.`series_id` = `series`.`id`") #LEFT OUTER JOIN `functional_scenarios` ON `functional_scenarios`.`id` = `series_log_items`.`functional_scenario_id` LEFT OUTER JOIN `functional_sets` ON `functional_sets`.`id` = `functional_scenarios`.`functional_set_id`").order("functional_sets.setname, series.order")
-    logger.info @series.to_sql
-    logger.info @series.count
+    # logger.info @series.to_sql
+    # logger.info @series.count
     
 
     respond_to do |format|

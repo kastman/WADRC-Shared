@@ -23,4 +23,21 @@ class Appointment < ActiveRecord::Base
     matching_series = series.map(&:series_detail_agreement).reject(&:blank?)
     matching_series.sum / matching_series.length unless matching_series.sum == 0
   end
+  
+  # Take each functional task and set its series to the correct pulse sequence.
+  def align_tasks
+    pp task_log_items = scan_tasks
+    pp series_with_metainfos = series.with_functional_metainfo.with_sequence_set
+    # task_metainfos = series_metainfos.select {|m| m.series_description =~ /Task|fMRI/i}
+    
+    pp task_log_items.size
+    pp series_with_metainfos.size
+
+    task_log_items.zip(series_with_metainfos).each do |item, series|
+      pp "Item: ", item
+      pp "Series: ", series
+      item.series = series
+      item.save! if item.changed?
+    end
+  end
 end

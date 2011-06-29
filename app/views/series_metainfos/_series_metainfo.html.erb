@@ -1,0 +1,12 @@
+<h3>Metainfo ID: <%= series_metainfo.id %></h3>
+<p><strong>RMR: </strong><%= series_metainfo.rmr %></p>
+<p><strong>Series Description: </strong><%= series_metainfo.series_description %></p>
+<p><strong>Path: </strong><%= series_metainfo.path %></p>
+<p><strong>Timestamp: </strong><%= series_metainfo.timestamp %></p>
+<p><strong>Scanned File: </strong><%= series_metainfo.scanned_file %></p>
+<p><strong>Glob: </strong><%= series_metainfo.glob %></p>
+<p><strong>RepTime: </strong><%= series_metainfo.rep_time %></p>
+<p><strong>Slices Per Volume: </strong><%= series_metainfo.slices_per_volume %></p>
+<p><strong>Thumbnail: </strong><%= series_metainfo.thumbnail_file_name %></p>
+<p><strong>DICOM Series UID: </strong><%= series_metainfo.dicom_series_uid %></p>
+<p><strong>DICOM Taghash: </strong><br/><%= series_metainfo.dicom_taghash.collect {|k,v| "#{k}: #{v[:value]}"}.join("<br/>").html_safe %></p>

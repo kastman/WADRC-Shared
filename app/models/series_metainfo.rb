@@ -14,41 +14,39 @@ class SeriesMetainfo < ActiveRecord::Base
   def pfile_digits
     PFILE_REGEX_MATCHING.match(scanned_file)[1]
   end
-  
-  def dicom_position
-    dicom_taghash['0020,0011'][:value] || ''
-  end
-  
-  def infer_position
-    position_from_taghash || position_from_path || position_from_rmr_index || nil
-  end
-  
+    
   def associate_with_related_series
     position = infer_position
+    position = 0 if position.blank?
+    
     conditions = {:appointment => {:mri_scans => {:study_rmr => rmr }}}
     
-    conditions[:order] = position unless position.blank?
+    conditions[:order] = position unless position == 0
     conditions[:pfile] = pfile? ? pfile_digits : nil
     
-    series = Series.joins(:appointment => :mri_scan).where(conditions).first
-    
-    pp series unless series.blank? if defined?(PP)
+    all_matched_series = Series.joins(:appointment => :mri_scan).where(conditions).with_sequence_set
+    matched_series = all_matched_series.select {|series| series.series_log_items.present? }.first || all_matched_series.first
+
+    pp matched_series unless matched_series.blank? if defined?(PP)
       
-    unless series.blank?
-      self.series = series
-      if self.series.changed?
+    unless matched_series.blank?
+      self.series = matched_series
+      if self.changed?
+        puts "saving"
         unless save
           return [self, self.errors]
         end
+      else
+        logger.debug "not changed."
       end
     else
       appointment = Appointment.joins(:mri_scan).where(:mri_scans => {:study_rmr => rmr}).first
       if appointment.blank?
-        puts "Can't find appointment with mri visit with rmr: #{info.rmr}"
+        puts "Can't find appointment with mri visit with rmr: #{rmr}"
       else
         # pp appointment
         # pp info
-        new_series = appointment.series.build(:order => position, :series_metainfo => self)
+        new_series = appointment.series.build(:order => position, :series_metainfo => self, :series_set_id => 2)
         unless new_series.save
           return [self, new_series.errors]
         end
@@ -59,13 +57,21 @@ class SeriesMetainfo < ActiveRecord::Base
   
   private 
   
+  def infer_position
+    @position ||= position_from_taghash || position_from_path || position_from_rmr_index || 0
+  end
+  
+  def dicom_position
+    dicom_taghash['0020,0011'][:value].to_i || nil
+  end
+  
   def position_from_taghash
     dicom_position if dicom_taghash.present?
   end
   
   def position_from_path
     match = /^S?(\d*)/.match(File.basename(path))
-    match[1] if match
+    match ? match[1] : nil
   end
   
   def position_from_rmr_index

@@ -9,7 +9,9 @@ class SeriesLogItem < ActiveRecord::Base
   
   scope :functionals_by_set, includes(:series).joins(:functional_scenario).where(:functional_scenario => {:functional_set_id => 3}).order(:series => :order)
   scope :functionals_by_description, joins(:functional_scenario).where(:functional_scenario => {:description => /Functional/i})
-  scope :functional_or_pulse_by_set_except_pfiles, joins(:functional_scenario, :series).where({:series => {:pfile => nil}}, {:functional_scenario => {:functional_set_id => [3,8]}})
+  # scope :functional_or_pulse_by_set_except_pfiles, joins(:functional_scenario, :series).where({:series => {:pfile => nil}}, {:functional_scenario => {:functional_set_id => [3,8]}})
+  scope :functional_or_pulse_by_set, joins(:functional_scenario).where(:functional_scenario => {:functional_set_id => [3,8]})
+  scope :except_pfiles, joins(:series).where(:series => {:pfile => nil})
   
   def related_series
     @related_series ||= self.series.appointment.series

@@ -6,6 +6,12 @@
 </p>
 
 <p>
+  <b>SeriesSet:</b>
+  <%= link_to @series.setname, @series.series_set if @series.series_set %>
+</p>
+
+
+<p>
   <b>Order:</b>
   <%= @series.order %>
 </p>
@@ -15,8 +21,18 @@
   <%= @series.pfile %>
 </p>
 
-<%#= render @series.series_log_item unless @series.series_log_item.blank? %>
-<%#= render @series.series_metainfo unless @series.series_metainfo.blank? %>
+
+<% unless @series.series_log_items.blank? %>
+<%= render @series.series_log_items %>
+<% else %>
+<h3>No Log Items</h3>
+<% end %>
+
+<% unless @series.series_metainfo.blank? %>
+<%= render @series.series_metainfo  %>
+<% else %>
+<h3>No Series Metainfo</h3>
+<% end %>
 
 <%= link_to 'Edit', edit_series_path(@series) %> |
 <%= link_to 'Back', series_index_path %>
