@@ -37,7 +37,7 @@ class Series < ActiveRecord::Base
     {:series_log_items => {:functional_scenarios => {:functional_set_id => [3,8] }}} |
     {:series_log_items => { :id => nil}}    
   )
-  scope :with_functional_metainfo, joins(:series_metainfo).where(:series_metainfo => {:series_description => /Task|Rest/i})
+  scope :with_functional_metainfo, joins(:series_metainfo).where(:series_metainfo => {:series_description => /Task|Rest|Run/i})
   
   scope :without_related_info, where("(`id` NOT IN (SELECT `series_id` FROM `series_log_items`)) AND (`id` NOT IN (SELECT `series_id` FROM `series_metainfos`))")
   scope :with_sequence_set, where(:series_set => SeriesSet::SEQUENCE_SET)

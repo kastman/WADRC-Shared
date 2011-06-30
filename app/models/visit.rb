@@ -15,6 +15,8 @@ class Visit < ActiveRecord::Base
 
   acts_as_reportable :except => [:created_at, :updated_at]
   
+  # search_methods :enumbers
+  
   # Pretty list of enumber(s)
   def enumbers
     enrollments.collect{|e| e.enumber}.join(', ')

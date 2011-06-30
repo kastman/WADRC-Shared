@@ -1,8 +1,8 @@
-require 'pp'
-class SeriesLogItemController < ApplicationController
+# require 'pp'
+class SeriesLogItemsController < ApplicationController
   def index
     @search = default_search(SeriesLogItem)
-    @series_log_item = @search.relation.page(params[:page])
+    @series_log_items = @search.relation.page(params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -10,8 +10,8 @@ class SeriesLogItemController < ApplicationController
     end
   end
 
-  # GET /series_log_item/1
-  # GET /series_log_item/1.xml
+  # GET /series_log_items/1
+  # GET /series_log_items/1.xml
   def show
     @series_log_item = SeriesLogItem.find(params[:id])
 
@@ -21,8 +21,8 @@ class SeriesLogItemController < ApplicationController
     end
   end
 
-  # GET /series_log_item/new
-  # GET /series_log_item/new.xml
+  # GET /series_log_items/new
+  # GET /series_log_items/new.xml
   def new
     @series_log_item = SeriesLogItem.new
 
@@ -32,13 +32,13 @@ class SeriesLogItemController < ApplicationController
     end
   end
 
-  # GET /series_log_item/1/edit
+  # GET /series_log_items/1/edit
   def edit
     @series_log_item = SeriesLogItem.find(params[:id])
   end
 
-  # POST /series_log_item
-  # POST /series_log_item.xml
+  # POST /series_log_items
+  # POST /series_log_items.xml
   def create
     @series_log_item = SeriesLogItem.new(params[:series_log_item])
 
@@ -53,20 +53,29 @@ class SeriesLogItemController < ApplicationController
     end
   end
 
-  # PUT /series_log_item/1
-  # PUT /series_log_item/1.xml
+  # PUT /series_log_items/1
+  # PUT /series_log_items/1.xml
   def update
     @series_log_item = SeriesLogItem.find(params[:id])
-    preferred_series_id = params[:series_log_item][:preferred_series_id]
-    preferred_series = Series.find(preferred_series_id)
+    # preferred_series_id = params[:series_log_item][:preferred_series_id]
+    # preferred_series = Series.find(preferred_series_id)
 
     respond_to do |format|
-      if preferred_series_id
-        if Series.merge(preferred_series, @series_log_item.series)
-          format.html { redirect_to(preferred_series, :notice => "Prefferred Series was sucessfully replaced!")}
+      # unless preferred_series_id.blank?
+        # @series_log_item.series_id = preferred_series_id
+      if params[:move_up_all_above]
+        if @series_log_item.move_up_all_above
+          format.html { redirect_to(@series_log_item.appointment, :notice => "Series were sucessfully shuffled!")}
           format.xml  { head :ok }
         else
-          format.html { render :action => "edit", :flash => "Something went wrong associating prefferred series #{preferred_series_id}"}
+          format.html { render :action => "edit", :flash => "Something went wrong moving up series."}
+        end
+      elsif params[:move_down_all_above]
+        if @series_log_item.move_down_all_above
+          format.html { redirect_to(@series_log_item.appointment, :notice => "Series were sucessfully shuffled!")}
+          format.xml  { head :ok }
+        else
+          format.html { render :action => "edit", :flash => "Something went wrong moving up series."}
         end
       elsif @series_log_item.update_attributes(params[:series_log_item])
         format.html { redirect_to(@series_log_item, :notice => 'SeriesLogItem was successfully updated.') }
@@ -78,8 +87,8 @@ class SeriesLogItemController < ApplicationController
     end
   end
 
-  # DELETE /series_log_item/1
-  # DELETE /series_log_item/1.xml
+  # DELETE /series_log_items/1
+  # DELETE /series_log_items/1.xml
   def destroy
     @series_log_item = SeriesLogItem.find(params[:id])
     @series_log_item.destroy

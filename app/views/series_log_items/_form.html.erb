@@ -17,7 +17,15 @@
 	<%= f.input :has_concerns %>
 	<%= f.input :comment %>
 	
-	<%= f.input :preferred_series_id, :collection => @series_log_item.related_series, :label_method => :order %>
+	<%#= f.input :preferred_series_id, :collection => @series_log_item.related_series, :label_method => :order %>
+	<div class="input checkbox optional" style="clear: both;">
+		<%= f.label :move_up_all_above, "Move up all above?" %>
+		<%= check_box_tag :move_up_all_above %>
+	</div>
+	<div class="input checkbox optional" style="clear: both;">
+		<%= f.label :move_down_all_above, "Move down all above?" %>
+		<%= check_box_tag :move_down_all_above %>
+	</div>
 	
 	<%= f.button :submit %>
 <% end %>
