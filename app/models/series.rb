@@ -90,17 +90,17 @@ class Series < ActiveRecord::Base
       unless series_metainfo.present? && series_metainfo.series_description =~ /VIPR/i
         self.series_set = PFILE_SERIES_SET
         if self.changed?
-          unless save!
+          unless save
             return [self, self.errors]
           end
         end
       end
     end
     
-    if series_log_items.present? && series_log_items.select{ |li| li.setname =~ /Pre|Post/i }
+    if series_log_items.present? && series_log_items.select{ |li| li.functional_scenario.present? && li.setname =~ /Pre|Post/i }
       self.series_set = OUT_OF_SCANNER_SET
       if self.changed?
-        unless save!
+        unless save
           return [self, self.errors]
         end
       end

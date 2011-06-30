@@ -14,6 +14,20 @@ namespace :metainfo do
     puts errors.size, " errors"
   end
   
+  desc "Assign a series_set to series (pfile, sequence, etc)"
+  task(:assign_set => :environment) do
+    errors = []
+    Series.find_each do |series|
+      # pp series
+      results = series.associate_with_series_set
+      errors << results unless results.blank?
+      print '.'; STDOUT.flush
+    end
+    
+    pp errors
+    puts errors.size, " errors"
+  end
+  
   # desc "Zip Functionals"
   # task (:zip_funcs => :environment) do
   #   disputed = []

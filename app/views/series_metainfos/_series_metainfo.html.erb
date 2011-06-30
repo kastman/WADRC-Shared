@@ -9,4 +9,4 @@
 <p><strong>Slices Per Volume: </strong><%= series_metainfo.slices_per_volume %></p>
 <p><strong>Thumbnail: </strong><%= series_metainfo.thumbnail_file_name %></p>
 <p><strong>DICOM Series UID: </strong><%= series_metainfo.dicom_series_uid %></p>
-<p><strong>DICOM Taghash: </strong><br/><%= series_metainfo.dicom_taghash.collect {|k,v| "#{k}: #{v[:value]}"}.join("<br/>").html_safe %></p>
+<p><strong>DICOM Taghash: </strong><br/><%= series_metainfo.dicom_taghash.collect {|k,v| "#{k}: #{v[:value]}"}.join("<br/>").html_safe unless series_metainfo.dicom_taghash.blank? %></p>
