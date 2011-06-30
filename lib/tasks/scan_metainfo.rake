@@ -14,14 +14,24 @@ namespace :metainfo do
     puts errors.size, " errors"
   end
   
+  desc "Remove childless series"
+  task(:remove_childless_series => :environment) do
+    pp Series.without_related_info.destroy_all
+  end
+  
   desc "Assign a series_set to series (pfile, sequence, etc)"
   task(:assign_set => :environment) do
     errors = []
     Series.find_each do |series|
       # pp series
-      results = series.associate_with_series_set
-      errors << results unless results.blank?
-      print '.'; STDOUT.flush
+      result = series.associate_with_series_set
+      if result == true
+        mark = '.'
+      else
+        errors << result
+        mark = 'x'
+      end
+      print mark; STDOUT.flush
     end
     
     pp errors

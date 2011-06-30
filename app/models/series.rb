@@ -1,13 +1,6 @@
 class Series < ActiveRecord::Base
-  TASK_FUNCTIONAL_SET_IDS = [
-      FunctionalSet.find_by_setname("In-Scan Task"),
-      FunctionalSet.find_by_setname("Pre"),
-      FunctionalSet.find_by_setname("Post")
-  ].reject(&:blank?).map(&:id)
-  PFILE_SERIES_SET = SeriesSet.find_or_create_by_setname('pfile')
-  OUT_OF_SCANNER_SET = SeriesSet.find_or_create_by_setname('computer-task')
-  SEQUENCE_SET = SeriesSet.find_or_create_by_setname('sequence')
-  
+  # SeriesSet Constants are defined in SeriesSet.rb
+  # FunctionalSet Constants are defined in FunctionalSet.rb
 
   belongs_to :appointment
   belongs_to :series_set
@@ -37,7 +30,7 @@ class Series < ActiveRecord::Base
   # scope :with_pulse_sequences, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("Pulse Sequence")}})
   scope :with_pulse_sequences, includes(:series_log_items => :functional_scenario).where(
     {:series_log_items => { :id => nil}} | 
-    {:series_log_items => { :functional_scenarios => { :functional_set_id.not_in => TASK_FUNCTIONAL_SET_IDS}}}
+    {:series_log_items => { :functional_scenarios => { :functional_set_id.not_in => FunctionalSet::TASK_FUNCTIONAL_SET_IDS}}}
   )
   scope :with_scan_tasks, joins(:series_log_items => :functional_scenario).where(:series_log_items => {:functional_scenario => {:functional_set_id => FunctionalSet.find_by_setname("In-Scan Task")}})
   scope :with_pulses_or_tasks, includes(:series_log_items => :functional_scenario).where(
@@ -47,7 +40,7 @@ class Series < ActiveRecord::Base
   scope :with_functional_metainfo, joins(:series_metainfo).where(:series_metainfo => {:series_description => /Task|Rest/i})
   
   scope :without_related_info, where("(`id` NOT IN (SELECT `series_id` FROM `series_log_items`)) AND (`id` NOT IN (SELECT `series_id` FROM `series_metainfos`))")
-  scope :with_sequence_set, where(:series_set => SEQUENCE_SET)
+  scope :with_sequence_set, where(:series_set => SeriesSet::SEQUENCE_SET)
   
   def formatted_pfile
     pfile && "P%05i.7" % pfile
@@ -85,27 +78,32 @@ class Series < ActiveRecord::Base
     end
   end
   
+  # First check presence of Pfile (except VIPR PFiles)
+  # Then, if log items are present, check if the set is Pre or Post and assign those computer tasks.
+  # If no log items are present or there are none in the pre or post sets, then assign a sequence.
   def associate_with_series_set
+    
     if pfile.present?
       unless series_metainfo.present? && series_metainfo.series_description =~ /VIPR/i
         self.series_set = PFILE_SERIES_SET
-        if self.changed?
-          unless save
-            return [self, self.errors]
-          end
-        end
+      end
+    elsif series_log_items.present? 
+      unless series_log_items.select{ |li| li.functional_scenario.present? && li.setname =~ /Pre|Post/i }.blank?
+        self.series_set = OUT_OF_SCANNER_SET
+      else
+        self.series_set = SEQUENCE_SET
+      end
+    else
+      self.series_set = SEQUENCE_SET
+    end
+    
+    if self.changed?
+      unless save
+        return [self, self.errors]
       end
     end
     
-    if series_log_items.present? && series_log_items.select{ |li| li.functional_scenario.present? && li.setname =~ /Pre|Post/i }
-      self.series_set = OUT_OF_SCANNER_SET
-      if self.changed?
-        unless save
-          return [self, self.errors]
-        end
-      end
-    end
-    
+    return true
   end
   
   

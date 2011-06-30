@@ -1,4 +1,5 @@
 class SeriesLogItem < ActiveRecord::Base
+  # SeriesSet Constants are defined in SeriesSet.rb
   belongs_to :series
   belongs_to :functional_scenario
   
@@ -27,11 +28,11 @@ class SeriesLogItem < ActiveRecord::Base
   end
   
   def one_series_up
-    new_series = self.series.appointment.series.with_pulses_or_tasks.find_or_initialize_by_order(order + 1)
+    new_series = self.series.appointment.series.find_or_initialize_by_order_and_series_set_id(order + 1, SeriesSet::SEQUENCE_SET.id)
   end
   
   def one_series_down
-    new_series = self.series.appointment.series.with_pulses_or_tasks.find_or_initialize_by_order(order - 1)
+    new_series = self.series.appointment.series.find_or_initialize_by_order_and_series_set_id(order - 1, SeriesSet::SEQUENCE_SET.id)
   end
   
   def move_up_one_position!
@@ -45,20 +46,20 @@ class SeriesLogItem < ActiveRecord::Base
   end
 
   def move_down_all_above
-    higher_series_log_items = appointment.series_log_items.functional_or_pulse_by_set.where(:series => {:order.gte => order}).order("`order` ASC") # related_series.select{|series| series.order > order}
+    higher_series_log_items = appointment.series_log_items.functional_or_pulse_by_set.except_pfiles.where(:series => {:order.gte => order}).order("`series`.`order` ASC") # related_series.select{|series| series.order > order}
     logger.debug higher_series_log_items.to_sql
     higher_series_log_items.each do |higher|
-      pp higher
+      logger.debug { higher }
       higher.move_down_one_position!
     end
   end
 
   
   def move_up_all_above
-    higher_series_log_items = appointment.series_log_items.functional_or_pulse_by_set.where(:series => {:order.gte => order}).order("`order` ASC") # related_series.select{|series| series.order > order}
+    higher_series_log_items = appointment.series_log_items.functional_or_pulse_by_set.except_pfiles.where(:series => {:order.gte => order}).order("`series`.`order` ASC") # related_series.select{|series| series.order > order}
     logger.debug higher_series_log_items.to_sql
     higher_series_log_items.each do |higher|
-      pp higher
+      logger.debug { higher }
       higher.move_up_one_position!
     end
   end
