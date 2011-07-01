@@ -8,7 +8,7 @@ class Series < ActiveRecord::Base
   validates :appointment,
     :presence => true
     
-  validates :order, :uniqueness => {:scope => [:series_set, :appointment]}
+  validates :position, :uniqueness => {:scope => [:series_set, :appointment]}
     
   validates :series_set,
     :presence => true
@@ -41,6 +41,8 @@ class Series < ActiveRecord::Base
   
   scope :without_related_info, where("(`id` NOT IN (SELECT `series_id` FROM `series_log_items`)) AND (`id` NOT IN (SELECT `series_id` FROM `series_metainfos`))")
   scope :with_sequence_set, where(:series_set => SeriesSet::SEQUENCE_SET)
+  
+  acts_as_list :scope => [:appointment_id, :series_set_id]
   
   def formatted_pfile
     pfile && "P%05i.7" % pfile
@@ -85,16 +87,16 @@ class Series < ActiveRecord::Base
     
     if pfile.present?
       unless series_metainfo.present? && series_metainfo.series_description =~ /VIPR/i
-        self.series_set = PFILE_SERIES_SET
+        self.series_set = SeriesSet::PFILE_SERIES_SET
       end
     elsif series_log_items.present? 
       unless series_log_items.select{ |li| li.functional_scenario.present? && li.setname =~ /Pre|Post/i }.blank?
-        self.series_set = OUT_OF_SCANNER_SET
+        self.series_set = SeriesSet::OUT_OF_SCANNER_SET
       else
-        self.series_set = SEQUENCE_SET
+        self.series_set = SeriesSet::SEQUENCE_SET
       end
     else
-      self.series_set = SEQUENCE_SET
+      self.series_set = SeriesSet::SEQUENCE_SET
     end
     
     if self.changed?

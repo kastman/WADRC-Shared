@@ -1,6 +1,10 @@
 require 'pp'
 
 namespace :metainfo do
+  
+  desc "Run maintainance tasks after a fresh dump."
+  task :bootstrap => [:assign_set, :assign, :align_tasks, :assign, :remove_childless_series]
+    
 
   desc "Assign a series to metainfo"
   task(:assign => :environment) do
@@ -48,7 +52,7 @@ namespace :metainfo do
   #       
   #       # metainfos
   #       # puts metainfos = appointment.series_metainfos.has_pfile.to_sql
-  #       metainfos = SeriesMetainfo.functionals.where(:rmr => appointment.mri_scan.study_rmr).joins(:series).order(:series => :order)
+  #       metainfos = SeriesMetainfo.functionals.where(:rmr => appointment.mri_scan.study_rmr).joins(:series).order(:series => :position)
   #       # pp metainfos.count
   #       # pp metainfos.collect(&:series_description)
   #     
@@ -68,7 +72,7 @@ namespace :metainfo do
   #           next if meta.pfile?
   #           puts position = meta.dicom_taghash['0020,0011'][:value]
   #           
-  #           puts pulse_series = appointment.series.where(:order => position).first
+  #           puts pulse_series = appointment.series.where(:position => position).first
   #           
   #           # pulse_series.series_metainfo = meta
   #           pulse_series.series_log_item = log
@@ -89,8 +93,8 @@ namespace :metainfo do
   #   # disputed.collect {|a,m,l| pp a }
   # end
   
-  desc "Zip log funcs"
-  task(:zip_log_funcs => :environment) do 
+  desc "Align tasks within each appointment."
+  task(:align_tasks => :environment) do 
     Appointment.find_each do |appointment|
       a.align_tasks
     # # Appointment.all[1000..1200].each do |appointment|    

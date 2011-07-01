@@ -21,7 +21,7 @@ class SeriesMetainfo < ActiveRecord::Base
     
     conditions = {:appointment => {:mri_scans => {:study_rmr => rmr }}}
     
-    conditions[:order] = position unless position == 0
+    conditions[:position] = position unless position == 0
     conditions[:pfile] = pfile? ? pfile_digits : nil
     
     all_matched_series = Series.joins(:appointment => :mri_scan).where(conditions).with_sequence_set
@@ -46,7 +46,7 @@ class SeriesMetainfo < ActiveRecord::Base
       else
         # pp appointment
         # pp info
-        new_series = appointment.series.build(:order => position, :series_metainfo => self, :series_set_id => 2)
+        new_series = appointment.series.build(:position => position, :series_metainfo => self, :series_set_id => 2)
         unless new_series.save
           return [self, new_series.errors]
         end

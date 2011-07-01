@@ -3,6 +3,6 @@
 Factory.define :series do |f|
   f.association(:appointment)
   f.association(:series_set)
-  f.order 1
+  f.position 1
   f.pfile 12345
 end

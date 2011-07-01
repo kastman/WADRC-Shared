@@ -26,16 +26,18 @@ class Appointment < ActiveRecord::Base
   
   # Take each functional task and set its series to the correct pulse sequence.
   def align_tasks
-    pp task_log_items = scan_tasks
-    pp series_with_metainfos = series.with_functional_metainfo.with_sequence_set
+    task_log_items = scan_tasks
+    series_with_metainfos = series.with_functional_metainfo.with_sequence_set.order(:position)
     # task_metainfos = series_metainfos.select {|m| m.series_description =~ /Task|fMRI/i}
     
-    pp task_log_items.size
-    pp series_with_metainfos.size
+    task_log_items.size
+    series_with_metainfos.size
 
     task_log_items.zip(series_with_metainfos).each do |item, series|
-      pp "Item: ", item
-      pp "Series: ", series
+      if defined?(PP)
+        pp "Item: ", item
+        pp "Series: ", series
+      end
       item.series = series
       item.save! if item.changed?
     end

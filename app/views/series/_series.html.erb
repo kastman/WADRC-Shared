@@ -1,6 +1,6 @@
 <tr>
 	<th><%= link_to series.setname, series.series_set unless series.series_set.blank? %></th>
-	<th><%= link_to series.order, series %> (<%= series.id %>)</th>
+	<th><%= link_to series.position, series %> (<%= series.id %>)</th>
 	<td><%= series.formatted_pfile %></td>
 	<td><%= series.series_metainfo.series_description unless series.series_metainfo.blank? %> (<%= series.series_metainfo.id unless series.series_metainfo.blank? %>)</td>
 	<td><%= link_to series.pulse_sequence.description, series.pulse_sequence unless series.pulse_sequence.blank? %> (<%= series.pulse_sequence.id unless series.pulse_sequence.blank? %>)</td>

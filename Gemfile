@@ -14,6 +14,7 @@ gem 'acts_as_reportable', '~> 1.1.1'
 gem 'simple_form', '~>1.4.1'
 gem 'wherex', '~>1.0.0'
 gem 'levenshtein'
+gem 'acts_as_list', '~> 0.1.3'
 
 # Use unicorn as the web server
 # gem 'unicorn'
