@@ -27,7 +27,7 @@
 <p>
 	<b>Visits:</b>
 	<ul>
-	<% @enrollment.visits.each do |v| %>
+	<% @visits.each do |v| %>
 		<li><%= link_to "#{v.visit_number} - #{v.visit_date}", v %></li>
 	<% end %>
 	</ul>

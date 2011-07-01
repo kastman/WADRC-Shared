@@ -15,7 +15,12 @@ class Visit < ActiveRecord::Base
 
   acts_as_reportable :except => [:created_at, :updated_at]
   
-  # search_methods :enumbers
+  acts_as_list :scope => :enrollment, :column => :visit_number
+  
+  
+  def participant
+    enrollments.first.participant
+  end
   
   # Pretty list of enumber(s)
   def enumbers
@@ -27,7 +32,7 @@ class Visit < ActiveRecord::Base
     unless appointments.blank?
       appointments.sort_by(&:appointment_date).first.appointment_date
     else
-      ''
+      '<no date>'
     end
   end
   
