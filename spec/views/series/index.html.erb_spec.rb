@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe "series/index.html.erb" do
   before(:each) do
+    # participant = Factory(:participant)
+    # enrollment = Factory(:enrollment, :participant => participant)
+    # visit = Factory(:visit)
+    # appointment = Factory(:appointment, :visit => visit)
+    
     assign(:series, [
       Factory(:series,
         :position => 1,

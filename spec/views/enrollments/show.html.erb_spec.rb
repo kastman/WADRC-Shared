@@ -8,6 +8,7 @@ describe "enrollments/show.html.erb" do
       :recruitment_source => "Recruitment Source",
       :withdrawl_reason => "MyText"
     ))
+    @visits = assign(:visits, [Factory(:visit)])
   end
 
   it "renders attributes in <p>" do
