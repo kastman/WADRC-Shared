@@ -84,28 +84,24 @@ class Series < ActiveRecord::Base
   # Then, if log items are present, check if the set is Pre or Post and assign those computer tasks.
   # If no log items are present or there are none in the pre or post sets, then assign a sequence.
   def associate_with_series_set
+    new_set = SeriesSet::SEQUENCE_SET
     
     if pfile.present?
       unless series_metainfo.present? && series_metainfo.series_description =~ /VIPR/i
-        self.series_set = SeriesSet::PFILE_SERIES_SET
+        new_set = SeriesSet::PFILE_SERIES_SET
       end
-    elsif series_log_items.present? 
+    elsif series_log_items.present?
       unless series_log_items.select{ |li| li.functional_scenario.present? && li.setname =~ /Pre|Post/i }.blank?
-        self.series_set = SeriesSet::OUT_OF_SCANNER_SET
-      else
-        self.series_set = SeriesSet::SEQUENCE_SET
+        new_set = SeriesSet::OUT_OF_SCANNER_SET
       end
+    end
+
+    unless new_set == self.series_set
+      update_attributes(:series_set => new_set)
     else
-      self.series_set = SeriesSet::SEQUENCE_SET
+      return nil
     end
     
-    if self.changed?
-      unless save
-        return [self, self.errors]
-      end
-    end
-    
-    return true
   end
   
   

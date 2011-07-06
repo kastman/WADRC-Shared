@@ -4,42 +4,142 @@ namespace :metainfo do
   
   desc "Run maintainance tasks after a fresh dump."
   task :bootstrap => [:assign_set, :assign, :align_tasks, :assign, :remove_childless_series]
+
+  desc "Assign a series_set to series (pfile, sequence, etc)"
+  task(:assign_set => :environment) do
+    successes = []
+    errors = []
+    Series.find_each do |series|
+    # Series.limit(10).each do |series|
+      # pp series
+      result = series.associate_with_series_set
+      if result
+        successes << series
+        print '.'
+      elsif result == nil
+        print '*'
+      else
+        errors << series
+        print 'x'
+      end
+      STDOUT.flush
+    end
     
+    errors.each {|series| pp [series, series.errors]}
+    pp successes
+    puts "#{errors.size} errors, #{successes.size} successes"
+    
+  end    
 
   desc "Assign a series to metainfo"
   task(:assign => :environment) do
+    successes = []
     errors = []
+    warnings = []
+    orphan_rmrs = Set.new
     SeriesMetainfo.find_each do |info|
-      results = info.associate_with_related_series
-      errors << results unless results.blank?
+    # SeriesMetainfo.limit(500).offset(2000).each do |info|
+      result = info.associate_with_related_series
+      if result
+        if info.errors.empty?
+          successes << info.id
+          print '.'
+        else
+          orphan_rmrs << info.rmr
+          warnings << info
+          print 'w'
+        end
+      elsif result == nil
+        print '*'
+      else
+        errors << info
+        print 'x'
+      end
+      STDOUT.flush
     end
     
-    pp errors
-    puts errors.size, " errors"
+    errors.each {|model| pp [model.id, model.errors]}
+    warnings.each {|model| pp [model.id, model.errors]}
+    puts "#{errors.size} errors"
+    puts "#{warnings.size} warnings"
+    puts "#{successes.size} metainfos successfully saved."
+    pp orphan_rmrs
+    
+  end
+  
+  desc "Align tasks within each appointment."
+  task(:align_tasks => :environment) do 
+    errors = []
+    successes = []
+    
+    # Appointment.all(:limit => 50).each do |appointment|
+    Appointment.find_each do |appointment|
+      result = appointment.align_tasks
+      
+      if result
+        successes << appointment
+        print '.'
+      elsif result == nil
+        errors << appointment
+        print '*'
+      else
+        errors << appointment
+        print 'x'
+      end
+      STDOUT.flush
+      
+    end
+
+    errors.each {|appointment| pp [appointment, appointment.errors]}
+    puts "#{errors.size} errors"
+      
+        
+    # # Appointment.all[1000..1200].each do |appointment|    
+    # # Appointment.where(:id => 1327).each do |appointment|
+    #   appt_date = appointment.appointment_date
+    #   rmr = appointment.mri_scan.present? ? appointment.mri_scan.study_rmr : 'no mri details'
+    #   puts "%s \t %s\n-----" % [appt_date, rmr]
+    #   
+    #   by_set = appointment.series_log_items.functionals_by_set
+    #   by_description = appointment.series_log_items.functionals_by_description
+    #   
+    #   puts "By Set: #{by_set.count}\tBy Description: #{by_description.count}"
+    #   next unless by_set.count == by_description.count
+    #   pp by_set.collect(&:description)
+    #   pp by_description.collect(&:description)
+    #   
+    #   by_set_series = by_set.collect(&:series)
+    #   by_description_series = by_description.collect(&:series)
+    # 
+    #   by_set_series.zip(by_description_series).each do |in_scan_series, pulse_series|
+    #     Series.merge(pulse_series, in_scan_series)
+    #   end
+    #   
+    #   # by_set.zip(by_description).each do |in_scan, pulse|
+    #   #   pulse.functional_scenario = in_scan.functional_scenario
+    #   #   pulse.comment = in_scan.comment
+    #   #   pulse.has_concerns = in_scan.has_concerns
+    #   #   pulse.save
+    #   # end
+    #   # by_description.map do |in_scan| 
+    #   #   # Assign the metainfo to the first series to clear it.
+    #   #   if in_scan.series.series_metainfo.present?
+    #   #     meta = in_scan.series.series_metainfo
+    #   #     meta.series = Series.first
+    #   #     meta.save
+    #   #   end
+    #   # 
+    #   #   pp in_scan.series.series_log_item
+    #   #   
+    #   #   in_scan.destroy
+    #   #   in_scan.series.destroy
+    #   # end
+    #   puts
   end
   
   desc "Remove childless series"
   task(:remove_childless_series => :environment) do
     pp Series.without_related_info.destroy_all
-  end
-  
-  desc "Assign a series_set to series (pfile, sequence, etc)"
-  task(:assign_set => :environment) do
-    errors = []
-    Series.find_each do |series|
-      # pp series
-      result = series.associate_with_series_set
-      if result == true
-        mark = '.'
-      else
-        errors << result
-        mark = 'x'
-      end
-      print mark; STDOUT.flush
-    end
-    
-    pp errors
-    puts errors.size, " errors"
   end
   
   # desc "Zip Functionals"
@@ -92,54 +192,5 @@ namespace :metainfo do
   #   end
   #   # disputed.collect {|a,m,l| pp a }
   # end
-  
-  desc "Align tasks within each appointment."
-  task(:align_tasks => :environment) do 
-    Appointment.find_each do |appointment|
-      a.align_tasks
-    # # Appointment.all[1000..1200].each do |appointment|    
-    # # Appointment.where(:id => 1327).each do |appointment|
-    #   appt_date = appointment.appointment_date
-    #   rmr = appointment.mri_scan.present? ? appointment.mri_scan.study_rmr : 'no mri details'
-    #   puts "%s \t %s\n-----" % [appt_date, rmr]
-    #   
-    #   by_set = appointment.series_log_items.functionals_by_set
-    #   by_description = appointment.series_log_items.functionals_by_description
-    #   
-    #   puts "By Set: #{by_set.count}\tBy Description: #{by_description.count}"
-    #   next unless by_set.count == by_description.count
-    #   pp by_set.collect(&:description)
-    #   pp by_description.collect(&:description)
-    #   
-    #   by_set_series = by_set.collect(&:series)
-    #   by_description_series = by_description.collect(&:series)
-    # 
-    #   by_set_series.zip(by_description_series).each do |in_scan_series, pulse_series|
-    #     Series.merge(pulse_series, in_scan_series)
-    #   end
-    #   
-    #   # by_set.zip(by_description).each do |in_scan, pulse|
-    #   #   pulse.functional_scenario = in_scan.functional_scenario
-    #   #   pulse.comment = in_scan.comment
-    #   #   pulse.has_concerns = in_scan.has_concerns
-    #   #   pulse.save
-    #   # end
-    #   # by_description.map do |in_scan| 
-    #   #   # Assign the metainfo to the first series to clear it.
-    #   #   if in_scan.series.series_metainfo.present?
-    #   #     meta = in_scan.series.series_metainfo
-    #   #     meta.series = Series.first
-    #   #     meta.save
-    #   #   end
-    #   # 
-    #   #   pp in_scan.series.series_log_item
-    #   #   
-    #   #   in_scan.destroy
-    #   #   in_scan.series.destroy
-    #   # end
-    #   puts
-    end
-  end
-  
 
 end

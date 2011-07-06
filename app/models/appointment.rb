@@ -30,16 +30,17 @@ class Appointment < ActiveRecord::Base
     series_with_metainfos = series.with_functional_metainfo.with_sequence_set.order(:position)
     # task_metainfos = series_metainfos.select {|m| m.series_description =~ /Task|fMRI/i}
     
-    task_log_items.size
-    series_with_metainfos.size
-
-    task_log_items.zip(series_with_metainfos).each do |item, series|
-      if defined?(PP)
-        pp "Item: ", item
-        pp "Series: ", series
+    if task_log_items.size == series_with_metainfos.size
+      task_log_items.zip(series_with_metainfos).each do |item, series|
+        # if defined?(PP)
+        #   pp "Item: ", item
+        #   pp "Series: ", series
+        # end
+        item.update_attributes(:series => series) unless item.series == series
       end
-      item.series = series
-      item.save! if item.changed?
+    else
+      self.errors.add(:base, "Can't align tasks of different sizes: Items (#{task_log_items.size}), Metainfos (#{series_with_metainfos.size})")
+      return nil
     end
   end
 end

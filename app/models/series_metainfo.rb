@@ -24,32 +24,49 @@ class SeriesMetainfo < ActiveRecord::Base
     conditions[:position] = position unless position == 0
     conditions[:pfile] = pfile? ? pfile_digits : nil
     
-    all_matched_series = Series.joins(:appointment => :mri_scan).where(conditions).with_sequence_set
+    all_matched_series = Series.joins(:appointment => :mri_scan).where(conditions)
+    unless pfile?
+      all_matched_series = all_matched_series.with_sequence_set
+    end
+    # pp all_matched_series.to_sql
     matched_series = all_matched_series.select {|series| series.series_log_items.present? }.first || all_matched_series.first
 
-    pp matched_series unless matched_series.blank? if defined?(PP)
+    # pp matched_series unless matched_series.blank? if defined?(PP)
       
     unless matched_series.blank?
-      self.series = matched_series
-      if self.changed?
-        puts "saving"
-        unless save
-          return [self, self.errors]
-        end
+      unless self.series == matched_series
+        # puts "updating #{id}"
+        update_attributes(:series => matched_series)
       else
-        logger.debug "not changed."
+        # puts "#{id} not changed."
+        return nil
       end
     else
       appointment = Appointment.joins(:mri_scan).where(:mri_scans => {:study_rmr => rmr}).first
       if appointment.blank?
-        puts "Can't find appointment with mri visit with rmr: #{rmr}"
+        # errors.add(:base, "Can't find any appointments related to mri_visit having :study_rmr => #{rmr} (there is no existing appointment for metainfo and series to belong to.)")
+        errors.add(:rmr, "No related MRI Scan")
+        # return nil
       else
-        # pp appointment
-        # pp info
-        new_series = appointment.series.build(:position => position, :series_metainfo => self, :series_set_id => 2)
-        unless new_series.save
-          return [self, new_series.errors]
-        end
+        # Allow for series to not have position if this is a new pfile series and position is unknown.
+        series_set = pfile? ? SeriesSet::PFILE_SERIES_SET : SeriesSet::SEQUENCE_SET 
+        series_options = {:appointment => appointment, :series_set => series_set }
+        series_options[:position] = position unless position == 0
+        
+        create_series(series_options)
+        
+        # if built_series = build_series(series_options)
+        #   # built_series.save
+        #   if built_series.valid?
+        #     self.series = built_series
+        #     save
+        #   else
+        #     errors.add(:series, "Cannot build valid series: #{built_series.errors.inspect}")
+        #     return false
+        #   end
+        # end
+        # new_series = appointment.series.build(:position => position, :series_metainfo => self, :series_set_id => 2)
+
       end
     end
   end
@@ -66,17 +83,19 @@ class SeriesMetainfo < ActiveRecord::Base
   end
   
   def position_from_taghash
-    dicom_position if dicom_taghash.present?
+    dicom_taghash.present? ? dicom_position : nil
   end
   
   def position_from_path
-    match = /^S?(\d*)/.match(File.basename(path))
+    # puts File.basename(path)
+    match = /^S?(\d+)/.match(File.basename(path))
     match ? match[1] : nil
   end
   
   def position_from_rmr_index
-    metainfos = SeriesMetainfo.where(:rmr => rmr, :scanned_file.not_eq => PFILE_REGEX_NON_MATCHING)
-    metainfos.include?(self) ?  metainfos.index(self) + 1 : nil
+    info_relation = SeriesMetainfo.where(:rmr => rmr)
+    metainfos = pfile?  ? info_relation.where(:scanned_file.eq => PFILE_REGEX_NON_MATCHING) : info_relation.where(:scanned_file.not_eq => PFILE_REGEX_NON_MATCHING)
+    metainfos.include?(self) ?  metainfos.index(self) + 1 : nil    
   end
   
   

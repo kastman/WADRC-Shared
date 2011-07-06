@@ -3,9 +3,9 @@
 <table>
 	<tfoot><tr><td colspan="7"><%= paginate @researchers %></td></tr></tfoot>
   <tr>
-    <th>Initials</th>
-    <th>First</th>
-    <th>Last</th>
+    <th><%= sort_link @search, :initials %></th>
+    <th><%= sort_link @search, :first %></th>
+    <th><%= sort_link @search, :last %></th>
 		<th>Appointments</th>
     <th></th>
     <th></th>

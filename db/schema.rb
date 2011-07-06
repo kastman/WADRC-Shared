@@ -196,7 +196,7 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
   add_index "series_metainfos", ["series_id"], :name => "series_id"
 
   create_table "series_sets", :force => true do |t|
-    t.string   "setname"
+    t.string   "setname",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
