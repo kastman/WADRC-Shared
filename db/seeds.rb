@@ -21,8 +21,10 @@ diagnosis_methods = DiagnosisMethod.create([
   {:consensus_method => "Clinician Dx"}
 ])
 
+# SeriesSet seeds are created in find_or_create_by in Model Constants
 series_sets = SeriesSet.create([
   {:setname => "pfile"}, 
   {:setname => "sequence"}, 
   {:setname => "computer-task"}
+#   {:setname => "post"}
 ])

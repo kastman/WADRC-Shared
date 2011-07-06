@@ -19,9 +19,11 @@
 			<%#= f.inputs :diagnosis, :for => :visit_diagnosis do  %>
 			<%= visit_dx_fields.association :diagnosis, :collection => Diagnosis.all, :label_method => :characterization %>
 			<%= visit_dx_fields.association :diagnosis_method, :collection => DiagnosisMethod.all, :label_method => :consensus_method %>
-			<%= visit_dx_fields.input :diagnosis_date, :as => :date %>
+			<%= visit_dx_fields.input :diagnosis_date, :as => :date, :include_blank => true %>
 			<%= visit_dx_fields.association :diagnoser, :collection => Researcher.all.sort_by(&:initials), :label_method => :initials %>
 		<% end %>
+		
+		<%= f.collection_check_boxes :enrollment_ids, @visit.participant.enrollments, :id, :enumber %>
 
 	<%= f.button :submit %>
 

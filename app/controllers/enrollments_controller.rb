@@ -17,6 +17,8 @@ class EnrollmentsController < ApplicationController
   # GET /enrollments/1.xml
   def show
     @enrollment = Enrollment.find(params[:id])
+    @visits = @enrollment.visits.order(:visit_number)
+    logger.debug @visits.to_sql
 
     respond_to do |format|
       format.html # show.html.erb

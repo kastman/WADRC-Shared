@@ -1,10 +1,10 @@
 <p id="notice"><%= notice %></p>
 <%= link_to @series_log_item.appointment_date, @series_log_item.appointment %>
-<p><b><%= link_to @series_log_item.series.order, @series_log_item.series %></b></p>
+<p><b><%= link_to @series_log_item.series.position, @series_log_item.series %></b></p>
 <p><b><%= link_to @series_log_item.description, @series_log_item.functional_scenario %></b></p>
 <p><b>Logfile:</b><%= @series_log_item.logfile %></p>
 <p><b>Has Concerns:</b><%= @series_log_item.has_concerns %></p>
 <p><b>Comment:</b><%= @series_log_item.comment %></p>
 
 <%= link_to 'Edit', edit_series_log_item_path(@series_log_item) %> |
-<%= link_to 'Back', series_log_item_index_path %>
+<%= link_to 'Back', series_log_items_path %>

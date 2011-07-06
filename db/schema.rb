@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
   create_table "series", :force => true do |t|
     t.integer  "appointment_id", :null => false
     t.integer  "series_set_id",  :null => false
-    t.integer  "order",          :null => false
+    t.integer  "position",       :null => false
     t.integer  "pfile"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -196,7 +196,7 @@ ActiveRecord::Schema.define(:version => 20110620174124) do
   add_index "series_metainfos", ["series_id"], :name => "series_id"
 
   create_table "series_sets", :force => true do |t|
-    t.string   "setname"
+    t.string   "setname",    :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

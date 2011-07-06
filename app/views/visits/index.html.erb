@@ -4,6 +4,7 @@
 	<tfoot><tr><td colspan="5"><%= paginate @visits %></td></tr></tfoot>
 	<tr>
 		<th><%= sort_link @search, :id %></th>
+		<th><%= sort_link @search, :enrollments_enumber, "Enumbers" %></th>
 		<th><%= sort_link @search, :visit_number %></th>
 		<th><%= sort_link @search, :appointments_appointment_date, "Appointments" %></th>
 		<th>Diagnosis<%#= sort_link @search, :current_diagnosis, "Diagnosis" %></th>
@@ -13,6 +14,7 @@
 <% @visits.each do |visit| %>
 	<tr>
 		<td><%= link_to visit.id, visit %></td>
+		<td><%= visit.enumbers %></td>
 		<td><%= visit.visit_number %></td>
 		<td><%= visit.appointments.collect{|a| link_to a.appointment_date, a }.join(', ').html_safe %></td>
 		<td><%= visit.current_diagnosis %></td>

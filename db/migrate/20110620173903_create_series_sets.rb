@@ -1,7 +1,7 @@
 class CreateSeriesSets < ActiveRecord::Migration
   def self.up
     create_table :series_sets do |t|
-      t.string :setname
+      t.string :setname, :null => false
 
       t.timestamps
     end

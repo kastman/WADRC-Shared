@@ -4,11 +4,11 @@ describe "series/index.html.erb" do
   before(:each) do
     assign(:series, [
       Factory(:series,
-        :order => 1,
+        :position => 1,
         :pfile => 12345
       ),
       Factory(:series,
-        :order => 1,
+        :position => 1,
         :pfile => 12345
       )
     ])

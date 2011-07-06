@@ -24,7 +24,7 @@
 	<b><%= pluralize @functional_scenario.series_log_items.count, "Series Log Item" %>:</b><br/>
 	<ul>
 		<% @functional_scenario.series_log_items.each do |item| %>
-			<li><%= link_to item.order, item.series %>: <%= item.description  %></li>
+			<li><%= link_to item.position, item.series %>: <%= item.description  %></li>
 		<% end %>
 	</ul>
 </p>

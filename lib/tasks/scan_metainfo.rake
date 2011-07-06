@@ -1,88 +1,99 @@
 require 'pp'
 
 namespace :metainfo do
+  
+  desc "Run maintainance tasks after a fresh dump."
+  task :bootstrap => [:assign_set, :assign, :align_tasks, :assign, :remove_childless_series]
+
+  desc "Assign a series_set to series (pfile, sequence, etc)"
+  task(:assign_set => :environment) do
+    successes = []
+    errors = []
+    Series.find_each do |series|
+    # Series.limit(10).each do |series|
+      # pp series
+      result = series.associate_with_series_set
+      if result
+        successes << series
+        print '.'
+      elsif result == nil
+        print '*'
+      else
+        errors << series
+        print 'x'
+      end
+      STDOUT.flush
+    end
+    
+    errors.each {|series| pp [series, series.errors]}
+    pp successes
+    puts "#{errors.size} errors, #{successes.size} successes"
+    
+  end    
 
   desc "Assign a series to metainfo"
   task(:assign => :environment) do
+    successes = []
     errors = []
+    warnings = []
+    orphan_rmrs = Set.new
     SeriesMetainfo.find_each do |info|
-      results = info.associate_with_related_series
-      errors << results unless results.blank?
+    # SeriesMetainfo.limit(500).offset(2000).each do |info|
+      result = info.associate_with_related_series
+      if result
+        if info.errors.empty?
+          successes << info.id
+          print '.'
+        else
+          orphan_rmrs << info.rmr
+          warnings << info
+          print 'w'
+        end
+      elsif result == nil
+        print '*'
+      else
+        errors << info
+        print 'x'
+      end
+      STDOUT.flush
     end
     
-    pp errors
-    puts errors.size, " errors"
+    errors.each {|model| pp [model.id, model.errors]}
+    warnings.each {|model| pp [model.id, model.errors]}
+    puts "#{errors.size} errors"
+    puts "#{warnings.size} warnings"
+    puts "#{successes.size} metainfos successfully saved."
+    pp orphan_rmrs
+    
   end
   
-  desc "Assign a series_set to series (pfile, sequence, etc)"
-  task(:assign_set => :environment) do
+  desc "Align tasks within each appointment."
+  task(:align_tasks => :environment) do 
     errors = []
-    Series.find_each do |series|
-      # pp series
-      results = series.associate_with_series_set
-      errors << results unless results.blank?
-      print '.'; STDOUT.flush
-    end
+    successes = []
     
-    pp errors
-    puts errors.size, " errors"
-  end
-  
-  # desc "Zip Functionals"
-  # task (:zip_funcs => :environment) do
-  #   disputed = []
-  #   pulse_sequence_set = FunctionalSet.find_by_setname('Pulse Sequence')
-  #   Appointment.find_each(:start => 1000) do |appointment|
-  #     unless appointment.mri_scan.blank?
-  #       puts rmr_number = appointment.mri_scan.study_rmr 
-  #       
-  #       # metainfos
-  #       # puts metainfos = appointment.series_metainfos.has_pfile.to_sql
-  #       metainfos = SeriesMetainfo.functionals.where(:rmr => appointment.mri_scan.study_rmr).joins(:series).order(:series => :order)
-  #       # pp metainfos.count
-  #       # pp metainfos.collect(&:series_description)
-  #     
-  #       # log items
-  #       log_items = appointment.series_log_items.functionals
-  #       # pp log_items.count
-  #       # pp log_items.collect(&:description)
-  # 
-  #       if metainfos.count != log_items.count
-  #         # disputed << {:appointment => appointment, :metainfos => metainfos, :log_items => log_items} 
-  #         puts "Metainfos: #{metainfos.count}; Logs: #{log_items.count}"
-  #       else
-  #         # Move the Functional Log Item to belong to the Pulse-Sequence Series,
-  #         # then delete the In-Scan Task Series
-  #         metainfos.zip(log_items).each do |meta, log|
-  #           # Skip Series that Are Pfiles - they should be separate.
-  #           next if meta.pfile?
-  #           puts position = meta.dicom_taghash['0020,0011'][:value]
-  #           
-  #           puts pulse_series = appointment.series.where(:order => position).first
-  #           
-  #           # pulse_series.series_metainfo = meta
-  #           pulse_series.series_log_item = log
-  #           
-  #           # original_task_series = log.series.dup
-  # 
-  #           # if pulse_seres.save
-  #           #   original_task_series.destroy
-  #           # end
-  # 
-  #           # meta.series = log.series
-  #           # meta.save if meta.changed?
-  #         end
-  #       end
-  #       puts "-----"
-  #     end
-  #   end
-  #   # disputed.collect {|a,m,l| pp a }
-  # end
-  
-  desc "Zip log funcs"
-  task(:zip_log_funcs => :environment) do 
+    # Appointment.all(:limit => 50).each do |appointment|
     Appointment.find_each do |appointment|
-      a.align_tasks
+      result = appointment.align_tasks
+      
+      if result
+        successes << appointment
+        print '.'
+      elsif result == nil
+        errors << appointment
+        print '*'
+      else
+        errors << appointment
+        print 'x'
+      end
+      STDOUT.flush
+      
+    end
+
+    errors.each {|appointment| pp [appointment, appointment.errors]}
+    puts "#{errors.size} errors"
+      
+        
     # # Appointment.all[1000..1200].each do |appointment|    
     # # Appointment.where(:id => 1327).each do |appointment|
     #   appt_date = appointment.appointment_date
@@ -124,8 +135,62 @@ namespace :metainfo do
     #   #   in_scan.series.destroy
     #   # end
     #   puts
-    end
   end
   
+  desc "Remove childless series"
+  task(:remove_childless_series => :environment) do
+    pp Series.without_related_info.destroy_all
+  end
+  
+  # desc "Zip Functionals"
+  # task (:zip_funcs => :environment) do
+  #   disputed = []
+  #   pulse_sequence_set = FunctionalSet.find_by_setname('Pulse Sequence')
+  #   Appointment.find_each(:start => 1000) do |appointment|
+  #     unless appointment.mri_scan.blank?
+  #       puts rmr_number = appointment.mri_scan.study_rmr 
+  #       
+  #       # metainfos
+  #       # puts metainfos = appointment.series_metainfos.has_pfile.to_sql
+  #       metainfos = SeriesMetainfo.functionals.where(:rmr => appointment.mri_scan.study_rmr).joins(:series).order(:series => :position)
+  #       # pp metainfos.count
+  #       # pp metainfos.collect(&:series_description)
+  #     
+  #       # log items
+  #       log_items = appointment.series_log_items.functionals
+  #       # pp log_items.count
+  #       # pp log_items.collect(&:description)
+  # 
+  #       if metainfos.count != log_items.count
+  #         # disputed << {:appointment => appointment, :metainfos => metainfos, :log_items => log_items} 
+  #         puts "Metainfos: #{metainfos.count}; Logs: #{log_items.count}"
+  #       else
+  #         # Move the Functional Log Item to belong to the Pulse-Sequence Series,
+  #         # then delete the In-Scan Task Series
+  #         metainfos.zip(log_items).each do |meta, log|
+  #           # Skip Series that Are Pfiles - they should be separate.
+  #           next if meta.pfile?
+  #           puts position = meta.dicom_taghash['0020,0011'][:value]
+  #           
+  #           puts pulse_series = appointment.series.where(:position => position).first
+  #           
+  #           # pulse_series.series_metainfo = meta
+  #           pulse_series.series_log_item = log
+  #           
+  #           # original_task_series = log.series.dup
+  # 
+  #           # if pulse_seres.save
+  #           #   original_task_series.destroy
+  #           # end
+  # 
+  #           # meta.series = log.series
+  #           # meta.save if meta.changed?
+  #         end
+  #       end
+  #       puts "-----"
+  #     end
+  #   end
+  #   # disputed.collect {|a,m,l| pp a }
+  # end
 
 end

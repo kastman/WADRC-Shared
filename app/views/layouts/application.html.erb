@@ -7,7 +7,7 @@
   <%= csrf_meta_tag %>
 </head>
 <body>
-
+<div id="main">
 <%= yield %>
 
 <nav>
@@ -19,5 +19,7 @@
 	<li><%= link_to "Researchers", researchers_url %></li>
 </ul>
 </nav>
+</div>
+<img src="/images/pandamonium.jpg">
 </body>
 </html>

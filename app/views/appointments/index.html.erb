@@ -3,14 +3,14 @@
 <table>
 	<tfoot><tr><td colspan="7"><%= paginate @appointments %></td></tr></tfoot>
   <tr>
-    <th>Visit</th>
-    <th>Appointment date</th>
+    <th><%= sort_link @search, :visit_visit_number, "Visit" %></th>
+    <th><%= sort_link @search, :appointment_date %></th>
     <th>Appointment comment</th>
-    <th>Researcher</th>
+    <th><%= sort_link @search, :researcher_initials, "Researcher" %></th>
 		<th>Series</th>
 		<th>Metainfos</th>
 		<th>ScanLogs</th>
-		<th>Desc. Agreement</th>
+		<th>Agreement</th>
     <th></th>
     <th></th>
     <th></th>

@@ -13,7 +13,7 @@
 
 <% @series.each do |series| %>
   <tr>
-    <td><%= series.order %></td>
+    <td><%= series.position %></td>
 		<td><%= link_to series.appointment_date, series.appointment unless series.appointment.blank? %></td>
     <td><%= series.pfile %></td>
 		<td><%= series.series_log_items.collect{|item| link_to item.description, item}.join(", ").html_safe %></td>
