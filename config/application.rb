@@ -40,7 +40,7 @@ module PandaShared
     config.filter_parameters += [:password]
     
     config.generators do |g|
-      # g.test_framework :shoulda
+      g.test_framework :rspec
       # g.fallbacks[:shoulda] = :rspec
       g.fixture_replacement :factory_girl
     end

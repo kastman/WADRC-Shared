@@ -8,6 +8,11 @@
 </head>
 <body>
 <div id="main">
+
+<% flash.each do |key, value| -%>
+	<div class="flash <%= key %>"><%= value %></div>
+<% end -%>
+
 <%= yield %>
 
 <nav>
@@ -19,6 +24,14 @@
 	<li><%= link_to "Researchers", researchers_url %></li>
 </ul>
 </nav>
+
+<% if signed_in? %>
+  <%= current_user.email %>
+  <%= link_to "Sign out", sign_out_path, :method => :delete %>
+<% else %>
+  <%= link_to "Sign in", sign_in_path %>
+<% end %>
+
 </div>
 <img src="/images/pandamonium.jpg">
 </body>
