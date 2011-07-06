@@ -4,7 +4,7 @@ gem 'rails', '~> 3.0.4'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
-
+gem 'jquery-rails'
 gem 'mysql2', '~> 0.2.6'
 gem 'kaminari', '~> 0.10.4'
 gem 'meta_where', '~> 1.0.4'
