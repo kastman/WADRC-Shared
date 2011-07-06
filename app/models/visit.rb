@@ -15,16 +15,17 @@ class Visit < ActiveRecord::Base
 
   acts_as_reportable :except => [:created_at, :updated_at]
   
-  acts_as_list :scope => :enrollment, :column => :visit_number
+  # TODO: ActsAsList seems to have some incompatibility with factory_girl
+  # acts_as_list :scope => :enrollment, :column => :visit_number
   
   
   def participant
-    enrollments.first.participant
+    enrollments.first.participant unless enrollments.empty?
   end
   
   # Pretty list of enumber(s)
   def enumbers
-    enrollments.collect{|e| e.enumber}.join(', ')
+    enrollments.collect{|e| e.enumber}.join(', ') unless enrollments.empty?
   end
   
   # Visit date is just first appointment date

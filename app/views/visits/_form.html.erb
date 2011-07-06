@@ -23,7 +23,7 @@
 			<%= visit_dx_fields.association :diagnoser, :collection => Researcher.all.sort_by(&:initials), :label_method => :initials %>
 		<% end %>
 		
-		<%= f.collection_check_boxes :enrollment_ids, @visit.participant.enrollments, :id, :enumber %>
+		<%= f.collection_check_boxes :enrollment_ids, @visit.participant.enrollments, :id, :enumber unless @visit.participant.blank? %>
 
 	<%= f.button :submit %>
 

@@ -14,6 +14,7 @@ describe "researchers/index.html.erb" do
         :last => "Last"
       )
     ])
+    assign(:search, Researcher.search)
   end
 
   it "renders a list of researchers" do
