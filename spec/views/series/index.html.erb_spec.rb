@@ -21,7 +21,7 @@ describe "series/index.html.erb" do
 
   it "renders a list of series" do
     render
-    rendered.should have_selector("tr>td", :content => 1.to_s)
-    rendered.should have_selector("tr>td", :content => 12345.to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => 1.to_s)
+    rendered.should have_selector("tr>td", :text => 12345.to_s, :count => 2)
   end
 end

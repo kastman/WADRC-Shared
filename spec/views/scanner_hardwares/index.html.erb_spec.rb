@@ -16,7 +16,7 @@ describe "scanner_hardwares/index.html.erb" do
 
   it "renders a list of scanner_hardwares" do
     render
-    rendered.should have_selector("tr>td", :content => "Name".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "Hardware Group".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Name".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Hardware Group".to_s, :count => 2)
   end
 end

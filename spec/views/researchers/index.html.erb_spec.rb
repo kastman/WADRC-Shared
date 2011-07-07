@@ -19,8 +19,8 @@ describe "researchers/index.html.erb" do
 
   it "renders a list of researchers" do
     render
-    rendered.should have_selector("tr>td", :content => "Initials".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "First".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "Last".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Initials".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "First".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Last".to_s, :count => 2)
   end
 end

@@ -14,6 +14,6 @@ describe "diagnoses/index.html.erb" do
 
   it "renders a list of diagnoses" do
     render
-    rendered.should have_selector("tr>td", :content => "Characterization".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Characterization".to_s, :count => 2)
   end
 end

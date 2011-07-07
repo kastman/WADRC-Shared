@@ -11,9 +11,9 @@ describe "functional_scenarios/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain("Description".to_s)
-    rendered.should contain(nil.to_s)
-    rendered.should contain(1.to_s)
-    rendered.should contain("Scenario File".to_s)
+    rendered.should have_content("Description".to_s)
+    rendered.should have_content(nil.to_s)
+    rendered.should have_content(1.to_s)
+    rendered.should have_content("Scenario File".to_s)
   end
 end

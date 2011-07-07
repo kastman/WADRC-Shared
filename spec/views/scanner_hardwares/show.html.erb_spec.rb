@@ -10,7 +10,7 @@ describe "scanner_hardwares/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain("Name".to_s)
-    rendered.should contain("Hardware Group".to_s)
+    rendered.should have_content("Name".to_s)
+    rendered.should have_content("Hardware Group".to_s)
   end
 end

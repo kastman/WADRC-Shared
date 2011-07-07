@@ -10,8 +10,8 @@ describe "mri_scans/index.html.erb" do
 
   it "renders a list of mri_scans" do
     render
-    rendered.should match_selector("tr>td", :content => "RMRabc", :count => 2)
-    rendered.should match_selector("tr>td", :content => "Nm", :count => 2)
+    rendered.should have_selector("tr>td", :text => "RMRabc", :count => 2)
+    rendered.should have_selector("tr>td", :text => "Nm", :count => 2)
 
     # rendered.should have_selector("tr>td", :count => 2) do |cell|
     #   cell.should contain(/RMR\d*/i)

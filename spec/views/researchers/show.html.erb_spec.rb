@@ -11,8 +11,8 @@ describe "researchers/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain("Initials".to_s)
-    rendered.should contain("First".to_s)
-    rendered.should contain("Last".to_s)
+    rendered.should have_content("Initials".to_s)
+    rendered.should have_content("First".to_s)
+    rendered.should have_content("Last".to_s)
   end
 end

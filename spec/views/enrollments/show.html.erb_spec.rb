@@ -13,9 +13,9 @@ describe "enrollments/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain(nil.to_s)
-    rendered.should contain("Enumber".to_s)
-    rendered.should contain("Recruitment Source".to_s)
-    rendered.should contain("MyText".to_s)
+    rendered.should have_content(nil.to_s)
+    rendered.should have_content("Enumber".to_s)
+    rendered.should have_content("Recruitment Source".to_s)
+    rendered.should have_content("MyText".to_s)
   end
 end

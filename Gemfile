@@ -38,17 +38,14 @@ gem 'clearance', '~> 0.12.0'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
-  gem 'rspec-rails', '~>2.4'
-  gem 'webrat'
-  gem 'cucumber-rails'
+  gem 'rspec-rails', '~>2.6'
+  gem 'cucumber-rails', '~> 0.5.1'
   gem 'cucumber'
-  gem 'capybara'
+  gem 'capybara', '~> 1.0.0'
   gem 'database_cleaner'
-  # gem 'webrat'
   gem 'pickle'
   gem 'autotest-rails'
   gem 'factory_girl_rails', '~>1.0.1'
   gem 'rails3-generators'
-  gem 'shoulda'
   gem 'hirb'
 end

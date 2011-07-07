@@ -8,8 +8,8 @@ describe "appointments/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain(nil.to_s)
-    rendered.should contain("MyText".to_s)
-    rendered.should contain(nil.to_s)
+    rendered.should have_content(nil.to_s)
+    rendered.should have_content("MyText".to_s)
+    rendered.should have_content(nil.to_s)
   end
 end

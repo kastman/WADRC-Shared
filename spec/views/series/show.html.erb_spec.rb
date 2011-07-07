@@ -7,6 +7,6 @@ describe "series/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain(1.to_s)
+    rendered.should have_content(1.to_s)
   end
 end

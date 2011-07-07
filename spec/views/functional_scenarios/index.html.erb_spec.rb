@@ -18,7 +18,7 @@ describe "functional_scenarios/index.html.erb" do
 
   it "renders a list of functional_scenarios" do
     render
-    rendered.should have_selector("tr>td", :content => "Description".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "Scenario File".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Description".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Scenario File".to_s, :count => 2)
   end
 end

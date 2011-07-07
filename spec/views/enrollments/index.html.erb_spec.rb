@@ -28,11 +28,11 @@ describe "enrollments/index.html.erb" do
 
   it "renders a list of enrollments" do
     render
-    rendered.should have_selector("tr>td", :content => "1".to_s, :count => 1)
-    rendered.should have_selector("tr>td", :content => "2".to_s, :count => 1)
-    rendered.should have_selector("tr>td", :content => "abc".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "Enumber".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "Recruitment Source".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "MyText".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "1".to_s, :count => 1)
+    rendered.should have_selector("tr>td", :text => "2".to_s, :count => 1)
+    rendered.should have_selector("tr>td", :text => "abc".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Enumber".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Recruitment Source".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "MyText".to_s, :count => 2)
   end
 end

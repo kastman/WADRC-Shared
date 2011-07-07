@@ -9,6 +9,6 @@ describe "diagnoses/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain("Characterization".to_s)
+    rendered.should have_content("Characterization".to_s)
   end
 end

@@ -26,6 +26,6 @@ describe "visits/index.html.erb" do
 
   it "renders a list of visits" do
     render
-    rendered.should have_selector("tr>td", :content => "MyText".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "MyText".to_s, :count => 2)
   end
 end

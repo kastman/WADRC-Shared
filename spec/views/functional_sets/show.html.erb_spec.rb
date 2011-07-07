@@ -9,6 +9,6 @@ describe "functional_sets/show.html.erb" do
 
   it "renders attributes in <p>" do
     render
-    rendered.should contain("Setname".to_s)
+    rendered.should have_content("Setname".to_s)
   end
 end

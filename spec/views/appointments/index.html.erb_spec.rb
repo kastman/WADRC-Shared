@@ -19,8 +19,8 @@ describe "appointments/index.html.erb" do
 
   it "renders a list of appointments" do
     render
-    rendered.should have_selector("tr>td", :content => Date.today.to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "MyText".to_s, :count => 2)
-    rendered.should have_selector("tr>td", :content => "abc".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => Date.today.to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "MyText".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "abc".to_s, :count => 2)
   end
 end

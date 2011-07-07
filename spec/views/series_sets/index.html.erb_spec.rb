@@ -14,6 +14,6 @@ describe "series_sets/index.html.erb" do
 
   it "renders a list of series_sets" do
     render
-    rendered.should have_selector("tr>td", :content => "Setname".to_s, :count => 2)
+    rendered.should have_selector("tr>td", :text => "Setname".to_s, :count => 2)
   end
 end
