@@ -5,11 +5,7 @@ class Visit < ActiveRecord::Base
   has_many :visit_diagnoses
   has_many :diagnoses, :through => :visit_diagnoses
   
-  # Rejection Validation: If _all_ the values are the same (i.e. empty strings), then
-  # inverting the array will give a size of 1, gt than 1 if they're different.
-  # This occurs when you don't want to put in a diagnosis but want to update
-  # the visit.
-  accepts_nested_attributes_for :visit_diagnoses, :reject_if => lambda { |a| a.invert.size == 1 }
+  accepts_nested_attributes_for :visit_diagnoses, :reject_if => :all_blank
   
   scope :without_appointments, where("id NOT IN (SELECT visit_id FROM appointments)")
 

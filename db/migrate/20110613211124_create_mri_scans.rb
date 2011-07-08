@@ -3,6 +3,7 @@ class CreateMriScans < ActiveRecord::Migration
     create_table :mri_scans do |t|
       t.references :appointment, :null => false
       t.string :study_rmr, :null => false
+      t.string :scanner_source
       t.integer :exam_number
       t.string :study_initials
       t.string :radiology_outcome

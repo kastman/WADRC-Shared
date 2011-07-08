@@ -3,10 +3,12 @@
 <table>
 	<tfoot><tr><td colspan="7"><%= paginate @appointments %></td></tr></tfoot>
   <tr>
+		<th><%= sort_link @search, :visit_enrollments_enumber, "Enum" %></th>
     <th><%= sort_link @search, :visit_visit_number, "Visit" %></th>
     <th><%= sort_link @search, :appointment_date %></th>
     <th>Appointment comment</th>
     <th><%= sort_link @search, :researcher_initials, "Researcher" %></th>
+		<th><%= sort_link @search, :mri_scan_study_rmr, "MRI RMR" %></th>
 		<th>Series</th>
 		<th>Metainfos</th>
 		<th>ScanLogs</th>
@@ -18,14 +20,16 @@
 
 <% @appointments.each do |appointment| %>
   <tr>
-    <td><%= appointment.visit_number unless appointment.visit.blank? %></td>
+		<td><%= appointment.enumbers %></td>
+    <td><%= appointment.visit_number if appointment.visit %></td>
     <td><%= appointment.appointment_date %></td>
     <td><%= appointment.appointment_comment %></td>
-    <td><%= link_to appointment.researcher_initials, appointment.researcher unless appointment.researcher.blank? %></td>
+    <td><%= link_to appointment.researcher_initials, appointment.researcher if appointment.researcher %></td>
+		<td><%= appointment.study_rmr if appointment.mri_scan %></td>
 		<td><%= appointment.series.count %></td>
 		<td><%= appointment.series_metainfos.count %></td>
 		<td><%= appointment.series_log_items.count %></td>
-		<td><%= display_agreement(appointment.total_series_description_agreement) unless appointment.total_series_description_agreement.blank?  %></td>
+		<td><%= display_agreement(appointment.total_series_description_agreement) if appointment.total_series_description_agreement  %></td>
     <td><%= link_to 'Show', appointment %></td>
     <td><%= link_to 'Edit', edit_appointment_path(appointment) %></td>
     <td><%= link_to 'Destroy', appointment, :confirm => 'Are you sure?', :method => :delete %></td>

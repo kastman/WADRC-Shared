@@ -15,6 +15,12 @@
 	<%= f.input :appointment_date %>
 	<%= f.input :appointment_comment %>
 	<%= f.association :researcher, :collection => Researcher.all.sort_by(&:initials), :label_method => :initials %>
+	<%= f.simple_fields_for :mri_scan do |mri_scan_fields| %>
+		<%= mri_scan_fields.input :id, :as => :hidden %>
+		<%= mri_scan_fields.input :study_rmr  %>
+		<%= mri_scan_fields.input :exam_number  %>
+		<p><%= mri_scan_fields.object.dicom_study_uid %></p>
+	<% end %>
 	<%= f.button :submit  %>
 	
 <% end %>

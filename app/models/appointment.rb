@@ -16,6 +16,8 @@ class Appointment < ActiveRecord::Base
 
   has_many :scan_tasks, :through => :series
   has_many :pulse_sequences, :through => :series
+  
+  accepts_nested_attributes_for :mri_scan, :update_only => true, :reject_if => :all_blank
     
   acts_as_reportable :except => [:created_at, :updated_at]
   

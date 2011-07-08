@@ -26,3 +26,11 @@
 <br />
 
 <%= link_to 'New Enrollment', new_enrollment_path %>
+
+<%= form_for @search do |f| %>
+	<p>
+		<%= f.label :enumber_like %>
+		<%= f.text_field :enumber_like %>
+	</p>
+	<p class="button"><%= f.submit "Search" %></p>
+<% end %>

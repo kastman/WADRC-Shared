@@ -9,8 +9,11 @@ class MriScan < ActiveRecord::Base
   delegate :initials, :to => :researcher, :prefix => true
   delegate :initials, :to => :study_scan_tech, :prefix => true
   delegate :appointment_date, :to => :appointment
-
-  validates_presence_of :appointment_id, :study_rmr
-  validates_uniqueness_of :exam_number, :study_rmr, :dicom_study_uid
+  
+  validates :study_rmr,       :presence => true
+  validates :appointment_id,  :uniqueness => true, :presence => true
+  validates :exam_number,     :uniqueness => true, :allow_nil => true
+  validates :dicom_study_uid, :uniqueness => true, :allow_nil => true
+  validates :exam_number,     :uniqueness => true, :allow_nil => true
 
 end
