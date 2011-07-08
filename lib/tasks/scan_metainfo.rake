@@ -192,5 +192,43 @@ namespace :metainfo do
   #   end
   #   # disputed.collect {|a,m,l| pp a }
   # end
+  
+  desc("Match Visits to MRI Scans")
+  task(:match_mri => :environment) do
+    successes = []
+    errors = []
+    warnings = []
+    
+    # VisitDatatools.limit(500).each do |old_visit|
+    VisitQinling.find_each do |old_visit|
+      result = old_visit.matching_mri_scan
+      if result
+        if old_visit.errors.empty?
+          successes << old_visit.rmr
+          print '.'
+        else
+          warnings << old_visit
+          print 'w'
+        end
+      elsif result == nil
+        unless old_visit.errors.empty?
+          warnings << old_visit
+        end
+        print '*'
+      else
+        errors << old_visit
+        print 'x'
+      end
+      STDOUT.flush
+    end
+    
+    puts
+    errors.each {|model| pp [model.id, model.errors]}
+    warnings.each {|model| pp [model.id, model.errors]}
+    pp successes
+    puts "#{errors.size} errors"
+    puts "#{warnings.size} warnings"
+    puts "#{successes.size} successfully matched."
+  end
 
 end
