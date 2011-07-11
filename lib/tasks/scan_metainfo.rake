@@ -199,8 +199,8 @@ namespace :metainfo do
     errors = []
     warnings = []
     
-    # VisitDatatools.limit(500).each do |old_visit|
-    VisitQinling.find_each do |old_visit|
+    VisitQinling.limit(10).offset(500).each do |old_visit|
+    # VisitQinling.find_each do |old_visit|
       result = old_visit.matching_mri_scan
       if result
         if old_visit.errors.empty?
@@ -213,6 +213,8 @@ namespace :metainfo do
       elsif result == nil
         unless old_visit.errors.empty?
           warnings << old_visit
+        else
+          errors << old_visit
         end
         print '*'
       else
@@ -228,7 +230,7 @@ namespace :metainfo do
     puts "Warnings:"
     warnings.each {|model| pp [model.id, model.errors]}
     puts "Successes:"
-    pp successes.sort {|first,second| first[1]<=> second[1]}
+    pp successes.sort {|first,second| first[:distance] <=> second[:distance]}
     puts "#{errors.size} errors"
     puts "#{warnings.size} warnings"
     puts "#{successes.size} successfully matched."

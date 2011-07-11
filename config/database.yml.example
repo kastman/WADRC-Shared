@@ -15,6 +15,10 @@ development:
   password: secret
   socket: /tmp/mysql.sock
   # host: localhost
+  # When tunneling over ssh:
+  # ssh -L 3307:x.x.x.x:3306 x.x.x.x
+  # host: 127.0.0.1
+  # port: 3307
 
 panda_production:
   adapter: sqlite3

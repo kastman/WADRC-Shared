@@ -60,21 +60,39 @@ class VisitQinling < ActiveRecord::Base
       # If no exact match found, look just by date and narrow it down by RMR Digit Similarity
       scans = MriScan.joins(:appointment).where(:appointment => {:appointment_date => date})
       if scans.size >= 1
-        (puts; puts scans.map(&:study_rmr).join(" - ")) if scans.size > 1
-        scans.each do |mri_scan|
-          match, digits, other_digits = match_by_rmr_digits? mri_scan
-          if match
-            return mri_scan
-          else
-            msg = spaceship_message(mri_scan)
+        matches = scans.collect {|scan| match_by_rmr_digits? scan }
+        
+        if matches.collect{|match, digits, other_digits| match}.empty?
+          matches.each do |match, digits, other_digits|
+            puts msg = spaceship_message(mri_scan)
             puts; puts msg
             puts "%s, %s" % [digits, other_digits]
             errors.add(:rmr, "#{msg}")
           end
+          return false
+        else
+          matches.select {|match, digits, other_digits| match }.each do |matching_digits|
+            matching_scan = scans[matches.index(matching_digits)]
+            return matching_scan
+          end
         end
         
+        # scans.each do |mri_scan|
+        #   match, digits, other_digits = match_by_rmr_digits? mri_scan
+        #   if match
+        #     return mri_scan
+        #   else
+        #     msg = spaceship_message(mri_scan)
+        #     puts; puts msg
+        #     puts "%s, %s" % [digits, other_digits]
+        #     errors.add(:rmr, "#{msg}")
+        #   end
+        # end
+        
+        (puts; puts scans.map(&:study_rmr).join(":")) if scans.size > 1
+        
         # Return false if none of the scans matched digits.
-        return false
+        # return false
       else
         appointments = Appointment.where(:appointment_date => date)
         
@@ -90,12 +108,12 @@ class VisitQinling < ActiveRecord::Base
   end
   
   def match_by_rmr_digits?(mri_scan)
-    digits = rmr_digits
     other_match = /(\d+)/.match(mri_scan.study_rmr)
     other_digits = other_match ? other_match[1] : ''
-    sorted_digits = [digits, other_digits].sort_by(&:size)
-    
-    [sorted_digits[1].index(sorted_digits[0]), digits, other_digits]
+    sorted_digits = [rmr_digits, other_digits].sort_by(&:size)
+    # Ensure that the index of an empty string is nil, not 0.
+    index = other_digits.blank? ? nil : sorted_digits[1].index(sorted_digits[0])
+    [index, rmr_digits, other_digits]
   end
   
   def rmr_digits
