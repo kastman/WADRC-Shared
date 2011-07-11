@@ -62,11 +62,11 @@ class VisitQinling < ActiveRecord::Base
       if scans.size >= 1
         matches = scans.collect {|scan| match_by_rmr_digits? scan }
         
-        if matches.collect{|match, digits, other_digits| match}.empty?
-          matches.each do |match, digits, other_digits|
-            puts msg = spaceship_message(mri_scan)
-            puts; puts msg
-            puts "%s, %s" % [digits, other_digits]
+        if matches.select { |match, digits, other_digits| match }.empty?
+          matches.each_with_index do |negative_matches, index|
+            msg = spaceship_message(scans[index])
+            # puts; puts msg
+            # puts "%s, %s" % [negative_matches[1], negative_matches[2]]
             errors.add(:rmr, "#{msg}")
           end
           return false
