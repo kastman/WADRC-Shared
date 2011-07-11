@@ -204,7 +204,7 @@ namespace :metainfo do
       result = old_visit.matching_mri_scan
       if result
         if old_visit.errors.empty?
-          successes << old_visit.rmr
+          successes << {:msg => old_visit.spaceship_message(result), :distance => old_visit.lev_distance(result) }
           print '.'
         else
           warnings << old_visit
@@ -223,9 +223,12 @@ namespace :metainfo do
     end
     
     puts
+    puts "Errors:"
     errors.each {|model| pp [model.id, model.errors]}
+    puts "Warnings:"
     warnings.each {|model| pp [model.id, model.errors]}
-    pp successes
+    puts "Successes:"
+    pp successes.sort {|first,second| first[1]<=> second[1]}
     puts "#{errors.size} errors"
     puts "#{warnings.size} warnings"
     puts "#{successes.size} successfully matched."

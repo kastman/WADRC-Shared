@@ -47,17 +47,67 @@ class VisitQinling < ActiveRecord::Base
   acts_as_reportable
   
   def matching_mri_scan
-    scans = MriScan.joins(:appointment).where(:study_rmr.like => rmr, :appointment => {:appointment_date => date})
+    if /RMRaic.*/i.match(rmr)
+      errors.add(:rmr, "AIC RMR, definitely no match: #{rmr}")
+      return nil
+    end
+    
+    # First look for an exact match on RMR and Date
+    # scans = MriScan.joins(:appointment).where(:study_rmr.like => rmr, :appointment => {:appointment_date => date})
+    scans = MriScan.where(:study_rmr.like => rmr)
     case scans.size
     when 0
-      errors.add(:rmr, "Didn't match #{rmr}")
-      return false
+      # If no exact match found, look just by date and narrow it down by RMR Digit Similarity
+      scans = MriScan.joins(:appointment).where(:appointment => {:appointment_date => date})
+      if scans.size >= 1
+        (puts; puts scans.map(&:study_rmr).join(" - ")) if scans.size > 1
+        scans.each do |mri_scan|
+          match, digits, other_digits = match_by_rmr_digits? mri_scan
+          if match
+            return mri_scan
+          else
+            msg = spaceship_message(mri_scan)
+            puts; puts msg
+            puts "%s, %s" % [digits, other_digits]
+            errors.add(:rmr, "#{msg}")
+          end
+        end
+        
+        # Return false if none of the scans matched digits.
+        return false
+      else
+        appointments = Appointment.where(:appointment_date => date)
+        
+        errors.add(:rmr, "No MriScans with date #{date} for #{rmr}. Appointments: #{appointments.map(&:appointment_date).join(", ")}")
+        return false
+      end
     when 1
       return scans.first
     else
       errors.add(:rmr, "Matched too many mri_scans (#{scans.all.map(&:id).join(", ")}) for #{rmr}")
       return nil
     end
+  end
+  
+  def match_by_rmr_digits?(mri_scan)
+    digits = rmr_digits
+    other_match = /(\d+)/.match(mri_scan.study_rmr)
+    other_digits = other_match ? other_match[1] : ''
+    sorted_digits = [digits, other_digits].sort_by(&:size)
+    
+    [sorted_digits[1].index(sorted_digits[0]), digits, other_digits]
+  end
+  
+  def rmr_digits
+    /(\d+)/.match(rmr) ? /(\d+)/.match(rmr)[1] : ''
+  end
+  
+  def spaceship_message(mri_scan)
+    "%s <=> %s (%.3f)" % [rmr, mri_scan.study_rmr, lev_distance(mri_scan)]
+  end
+  
+  def lev_distance(mri_scan)
+    Levenshtein.normalized_distance(rmr.downcase, mri_scan.study_rmr.downcase)
   end
   
   def participant

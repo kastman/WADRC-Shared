@@ -41,14 +41,10 @@
 
 <%= link_to 'New Appointment', new_appointment_path %>
 
-<%= form_for @search do |f| %>
-	<p>
-		<%= f.label :appointment_date_eq %>
-		<%= f.text_field :appointment_date_eq %>
-	</p>
-	<p>
-		<%= f.label :mri_scan_study_rmr_like %>
-		<%= f.text_field :mri_scan_study_rmr_like %>
-	</p>
-	<p class="button"><%= f.submit "Search" %></p>
+<%= simple_form_for @search do |f| %>
+	<%= f.input :visit_enrollments_enumber_like, :required => false, :label => "Enum" %>
+	<%= f.input :visit_enrollments_enumber_is_not_null, :as => :boolean, :label => "Enum isn't null" %>
+	<%= f.input :appointment_date_eq, :required => false, :label => "Date" %>
+	<%= f.input :mri_scan_study_rmr_like, :required => false, :label => "RMR" %>
+	<%= f.button :submit, "Search" %>
 <% end %>
