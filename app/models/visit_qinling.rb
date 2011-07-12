@@ -15,6 +15,8 @@ class VisitQinling < ActiveRecord::Base
   
   # has_and_belongs_to_many :scan_procedures
   has_many :image_datasets, :dependent => :destroy, :foreign_key => "visit_id"
+  has_many :enrollment_visit_membership_qinlings, :foreign_key => :visit_id
+  has_many :enrollment_qinlings, :through => :enrollment_visit_membership_qinlings, :foreign_key => :visit_id
   # has_many :log_files
   # belongs_to :user
   # has_one :participant, :through => :enrollment  # Defined manually because of has_many :enrollments
@@ -107,6 +109,52 @@ class VisitQinling < ActiveRecord::Base
     end
   end
   
+  def infer_enrollments
+    aic = rmr_aiclike?
+    # puts rmr_digits.length
+    if rmr_digits.length == 4
+      study = rmr_number_enum
+    else
+      study = rmr_study
+    end
+    study ||= ''
+    study.downcase!
+    guess = (study && rmr_digits) ? study + rmr_digits : ''
+    [rmr, study, enrollments_list]
+  end
+  
+  def rmr_aiclike?
+    match = /aic(\d+)/i.match(rmr)
+    match[1] if match
+  end
+  
+  def rmr_datelike?
+    begin
+      Date.parse(rmr_digits).year >= 1990
+    rescue ArgumentError
+      return false
+    end
+  end
+  
+  def rmr_study
+    match = /([a-z]+)\d*/.match(rmr)
+    match = /(?:RMR)?([A-z]{3})(?:MRI)?/.match(rmr) unless match
+    match ? match[1] : ''
+  end
+  
+  def rmr_number_enum
+    case rmr_digits.first.to_i
+    when 1
+      return 'tbi'
+    when 2
+      return 'alz'
+    when 4
+      return 'pc'
+    else
+      return nil
+    end
+  end
+  
   def match_by_rmr_digits?(mri_scan)
     other_match = /(\d+)/.match(mri_scan.study_rmr)
     other_digits = other_match ? other_match[1] : ''
@@ -152,7 +200,7 @@ class VisitQinling < ActiveRecord::Base
   end
   
   def enrollments_list
-    enrollments.collect {|enroll| enroll.enumber }.join(", ")
+    enrollment_qinlings.collect {|enroll| enroll.enumber }.join(", ")
   end
   
   # V is a Metamri VisitRawDataDirectory Object that has already been created 
