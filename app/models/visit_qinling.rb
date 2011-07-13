@@ -14,7 +14,7 @@ class VisitQinling < ActiveRecord::Base
   validates_uniqueness_of :dicom_study_uid, :case_sensitive => false, :unless => Proc.new {|visit| visit.dicom_study_uid.blank?}
   
   # has_and_belongs_to_many :scan_procedures
-  has_many :image_datasets, :dependent => :destroy, :foreign_key => "visit_id"
+  has_many :image_dataset_qinlings, :foreign_key => "visit_id"
   has_many :enrollment_visit_membership_qinlings, :foreign_key => :visit_id
   has_many :enrollment_qinlings, :through => :enrollment_visit_membership_qinlings, :foreign_key => :visit_id
   # has_many :log_files
@@ -109,18 +109,26 @@ class VisitQinling < ActiveRecord::Base
     end
   end
   
+  # extend Hirb::Console
+  # table  VisitQinling.includes(:image_dataset_qinlings).map(&:infer_enrollments).sort_by{|v| v[:rmr]}
   def infer_enrollments
-    aic = rmr_aiclike?
-    # puts rmr_digits.length
-    if rmr_digits.length == 4
+    if aic = rmr_aiclike?
+      study = ''
+    elsif rmr_datelike?
+      study = ''
+    elsif rmr_digits.length == 4
       study = rmr_number_enum
     else
       study = rmr_study
     end
     study ||= ''
     study.downcase!
-    guess = (study && rmr_digits) ? study + rmr_digits : ''
-    [rmr, study, enrollments_list]
+    guess = (study.present? && normed_rmr_digits.present?) ? study + normed_rmr_digits : ''
+    {:rmr => rmr, :guess => guess, :enrollments_list => enrollments_list, :best => enrollments_list.present? ? enrollments_list : guess}
+  end
+  
+  def rmr_agreement(list, guess)
+    list.include?(guess) ? true : false
   end
   
   def rmr_aiclike?
@@ -129,11 +137,22 @@ class VisitQinling < ActiveRecord::Base
   end
   
   def rmr_datelike?
+    return false unless rmr_digits.length > 4
     begin
-      Date.parse(rmr_digits).year >= 1990
+      date = case rmr_digits
+      when /^(\d{1,2})(\d{1,2})(\d{2})$/
+        Date.civil($3.to_i + 2000, $1.to_i, $2.to_i)
+      when /^(\d{1,2})(\d{1,2})(\d{4})$/
+        Date.civil($3.to_i, $1.to_i, $2.to_i)
+      else
+        Date.parse(rmr_digits)
+      end
+    
+      (1990...Date.today.year).include? date.year
     rescue ArgumentError
-      return false
+      false
     end
+    
   end
   
   def rmr_study
@@ -166,6 +185,10 @@ class VisitQinling < ActiveRecord::Base
   
   def rmr_digits
     /(\d+)/.match(rmr) ? /(\d+)/.match(rmr)[1] : ''
+  end
+  
+  def normed_rmr_digits
+    rmr_digits.length == 4 ? rmr_digits[-3..-1] : rmr_digits
   end
   
   def spaceship_message(mri_scan)
@@ -305,16 +328,27 @@ class VisitQinling < ActiveRecord::Base
     end
   end
   
+  def dicom_value_at tag
+    if image_dataset_qinlings.present?
+      image_dataset_qinlings.each do |dataset|
+        next unless dataset.dicom_taghash.present?
+        tags = dataset.dicom_taghash
+        if tags.has_key?(tag) && tags[tag].has_key?(:value)
+          return tags[tag][:value].present? ? tags[tag][:value] : nil
+        end
+      end
+    end
+
+    return nil
+  end
+  
   def age_from_dicom_info
     @age_info ||= {}
     return @age_info unless @age_info.blank?
     
-    image_datasets.each do |dataset|
-      if tags = dataset.dicom_taghash
-        @age_info[:age] = tags['0010,1010'][:value].blank? ? nil : tags['0010,1010'][:value].to_i
-        @age_info[:dob] = tags['0010,0030'][:value].blank? ? nil : begin DateTime.parse(tags['0010,0030'][:value]) rescue ArgumentError; nil end
-      end
-    end
+    @age_info[:age] = dicom_value_at('0010,1010').to_i
+    @age_info[:dob] = dicom_value_at('0010,0030').blank? ? nil : begin DateTime.parse(dicom_value_at('0010,0030')) rescue ArgumentError; nil end
+
     return @age_info
   end
   
@@ -337,11 +371,11 @@ class VisitQinling < ActiveRecord::Base
     @initials ||= ''
     return @initials unless @initials.blank?
     
-    image_datasets.each do |dataset|
-      if tags = dataset.dicom_taghash
-        @initials = tags['0010,0010'][:value] unless tags['0010,0010'][:value].blank?
-      end
-    end
+    # image_datasets.each do |dataset|
+    #   if tags = dataset.dicom_taghash
+    #     @initials = tags['0010,0010'][:value] unless tags['0010,0010'][:value].blank?
+    #   end
+    # end
     
     return @initials
   end

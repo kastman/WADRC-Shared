@@ -5,6 +5,8 @@
 # end
 
 class ImageDatasetQinling < ActiveRecord::Base
+  set_table_name "image_datasets"
+  set_primary_key "id"
   establish_connection :panda_production
   
   # default_includes = [:image_dataset_quality_checks, :analysis_memberships, {:visit => {:enrollment => :participant}}]

@@ -199,8 +199,8 @@ namespace :metainfo do
     errors = []
     warnings = []
     
-    VisitQinling.limit(10).offset(500).each do |old_visit|
-    # VisitQinling.find_each do |old_visit|
+    # VisitQinling.limit(500).offset(500).each do |old_visit|
+    VisitQinling.find_each do |old_visit|
       result = old_visit.matching_mri_scan
       if result
         if old_visit.errors.empty?
