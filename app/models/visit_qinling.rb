@@ -48,11 +48,31 @@ class VisitQinling < ActiveRecord::Base
   
   acts_as_reportable
   
+  def scan_attributes
+    {
+      :study_rmr => rmr,
+      :scanner_source => scanner_source,
+      :exam_number => scan_number,
+      :study_initials => initials,
+      :radiology_outcome => radiology_outcome,
+      :notes => radiology_note,
+      :dicom_dvd => dicom_dvd,
+      :study_path => path,
+      :created_by_id => created_by_id,
+      :dicom_study_uid => dicom_study_uid
+    }
+  end
+  
   def matching_mri_scan
-    if /RMRaic.*/i.match(rmr)
-      errors.add(:rmr, "AIC RMR, definitely no match: #{rmr}")
+    if rmr.blank?
+      errors.add(:rmr, "Can't match a blank RMR")
       return nil
     end
+    
+    # if /RMRaic.*/i.match(rmr)
+    #   errors.add(:rmr, "AIC RMR, definitely no match: #{rmr}")
+    #   return nil
+    # end
     
     # First look for an exact match on RMR and Date
     # scans = MriScan.joins(:appointment).where(:study_rmr.like => rmr, :appointment => {:appointment_date => date})
@@ -60,7 +80,7 @@ class VisitQinling < ActiveRecord::Base
     case scans.size
     when 0
       # If no exact match found, look just by date and narrow it down by RMR Digit Similarity
-      scans = MriScan.joins(:appointment).where(:appointment => {:appointment_date => date})
+      scans = MriScan.joins(:appointment).where(:appointment => {:appointment_date => date}).readonly(false)
       if scans.size >= 1
         matches = scans.collect {|scan| match_by_rmr_digits? scan }
         
@@ -75,6 +95,7 @@ class VisitQinling < ActiveRecord::Base
         else
           matches.select {|match, digits, other_digits| match }.each do |matching_digits|
             matching_scan = scans[matches.index(matching_digits)]
+            pp matching_scan if matching_scan.readonly?
             return matching_scan
           end
         end
@@ -109,9 +130,28 @@ class VisitQinling < ActiveRecord::Base
     end
   end
   
+  def infer_enrollments
+    enumbers = infer_enrollment_enums.split(", ")
+    enrollments = Enrollment.find_all_by_enumber(enumbers)
+    unless enumbers.size == enrollments.size
+      enrollments.clear
+      enrollments = []
+      enumbers.each do |enumber|
+        begin 
+          enrollments << Enrollment.find_or_create_by_enumber(enumber)
+        rescue StandardError => e
+          errors.add(:enumber, "problem adding #{enumber}")
+          return false
+        end
+      end
+    end
+    
+    return enrollments
+  end
+  
   # extend Hirb::Console
   # table  VisitQinling.includes(:image_dataset_qinlings).map(&:infer_enrollments).sort_by{|v| v[:rmr]}
-  def infer_enrollments
+  def infer_enrollment_enums
     if aic = rmr_aiclike?
       study = ''
     elsif rmr_datelike?
@@ -124,7 +164,8 @@ class VisitQinling < ActiveRecord::Base
     study ||= ''
     study.downcase!
     guess = (study.present? && normed_rmr_digits.present?) ? study + normed_rmr_digits : ''
-    {:rmr => rmr, :guess => guess, :enrollments_list => enrollments_list, :best => enrollments_list.present? ? enrollments_list : guess}
+    enrollments_list.present? ? enrollments_list : guess
+    # {:rmr => rmr, :guess => guess, :enrollments_list => enrollments_list, :best => enrollments_list.present? ? enrollments_list : guess}
   end
   
   def rmr_agreement(list, guess)
@@ -175,7 +216,11 @@ class VisitQinling < ActiveRecord::Base
   end
   
   def match_by_rmr_digits?(mri_scan)
+    # Don't match by digits when datelike (too many As and Bs)
+    return nil if rmr_datelike?
+    
     other_match = /(\d+)/.match(mri_scan.study_rmr)
+    
     other_digits = other_match ? other_match[1] : ''
     sorted_digits = [rmr_digits, other_digits].sort_by(&:size)
     # Ensure that the index of an empty string is nil, not 0.

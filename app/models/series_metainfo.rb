@@ -14,22 +14,29 @@ class SeriesMetainfo < ActiveRecord::Base
   def pfile_digits
     PFILE_REGEX_MATCHING.match(scanned_file)[1]
   end
+
+  def related_series_conditions
+    return @series_conditions if @series_conditions
+    
+    position = infer_position
+    position ||= 0
+    
+    @series_conditions = {:series_set => {:appointment => {:mri_scan => {:study_rmr => rmr} }}}
+    
+    @series_conditions[:position] = position unless position == 0
+    @series_conditions[:pfile] = pfile? ? pfile_digits : nil
+    
+    return @series_conditions
+  end
     
   def associate_with_related_series
-    position = infer_position
-    position = 0 if position.blank?
-    
-    conditions = {:series_set => {:appointment => {:mri_scan => {:study_rmr => rmr} }}}
-    
-    conditions[:position] = position unless position == 0
-    conditions[:pfile] = pfile? ? pfile_digits : nil
-    
-    all_matched_series = Series.joins(:series_set => {:appointment => :mri_scan}).where(conditions)
-    unless pfile?
-      all_matched_series = all_matched_series.with_sequence_set
-    end
+    all_matched_series = Series.joins(:series_set => {:appointment => :mri_scan}).where(related_series_conditions)
+    all_matched_series = all_matched_series.with_sequence_set unless pfile?
+
     # pp all_matched_series.to_sql
     # pp all_matched_series
+    
+    # Prefer a series with log_items, otherwise just choose the first one.
     matched_series = all_matched_series.select {|series| series.series_log_items.present? }.first || all_matched_series.first
 
     # pp matched_series unless matched_series.blank? if defined?(PP)
@@ -52,7 +59,7 @@ class SeriesMetainfo < ActiveRecord::Base
         # Allow for series to not have position if this is a new pfile series and position is unknown.
         series_set_category = pfile? ? SeriesSetCategory::PFILE : SeriesSetCategory::SEQUENCE
         series_set = SeriesSet.find_or_create_by_appointment_id_and_series_set_category_id(appointment, series_set_category)
-        series_options = {:series_set => series_set, :position => position}
+        series_options = {:series_set => series_set, :position => related_series_conditions[:position]}
         
         create_series(series_options)
         

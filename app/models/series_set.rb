@@ -1,6 +1,5 @@
 class SeriesSet < ActiveRecord::Base
-  validates :appointment, :presence => true
-  validates :series_set_category, :presence => true
+  validates_presence_of :appointment, :series_set_category
     
   # acts_as_list :position_in_category
   
@@ -15,6 +14,7 @@ class SeriesSet < ActiveRecord::Base
   belongs_to :series_set_category
   
   delegate :setname, :to => :series_set_category
+  delegate :appointment_date, :to => :appointment, :prefix => false
   
   scope :pfile, where(:series_set_category => SeriesSetCategory::PFILE)
   scope :sequence, where(:series_set_category => SeriesSetCategory::SEQUENCE)

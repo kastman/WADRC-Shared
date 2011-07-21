@@ -3,16 +3,10 @@ class SeriesLogItem < ActiveRecord::Base
   belongs_to :series
   belongs_to :series_scenario
   
-  validates_presence_of :series
+  validates_presence_of :series, :series_scenario
   
   delegate :appointment_date, :position, :appointment, :to => :series
   delegate :description, :setname, :to => :series_scenario
-  
-  # scope :functionals_by_set, includes(:series).joins(:series_scenario).where(:series_scenario => {:functional_set_id => 3}).order(:series => :position)
-  # scope :functionals_by_description, joins(:series_scenario).where(:series_scenario => {:description => /Functional/i})
-  # scope :functional_or_pulse_by_set_except_pfiles, joins(:series_scenario, :series).where({:series => {:pfile => nil}}, {:series_scenario => {:functional_set_id => [3,8]}})
-  # scope :functional_or_pulse_by_set, joins(:series_scenario).where(:series_scenario => {:functional_set_id => [3,8]})
-  # scope :except_pfiles, joins(:series).where(:series => {:pfile => nil})
   
   def related_series
     @related_series ||= self.series.appointment.series
@@ -65,7 +59,5 @@ class SeriesLogItem < ActiveRecord::Base
   end
   
   private
-  
-  def preferred_series_id; end
   
 end

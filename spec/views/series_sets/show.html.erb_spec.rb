@@ -2,9 +2,7 @@ require 'spec_helper'
 
 describe "series_sets/show.html.erb" do
   before(:each) do
-    @series_set = assign(:series_set, stub_model(SeriesSet,
-      :setname => "Setname"
-    ))
+    @series_set = assign(:series_set, Factory(:series_set))
   end
 
   it "renders attributes in <p>" do

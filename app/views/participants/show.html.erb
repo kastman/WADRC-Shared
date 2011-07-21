@@ -27,13 +27,8 @@
 
 <%= render :partial => 'enrollments/enrollments_ul', :object => @participant.enrollments %>
 
-<table>
-	<thead><tr><th colspan="2">Demographics</th></tr></thead>
-	<tr><td>Sex:</td><td><%= @participant.sex  %></td></tr>
-	<tr><td>Race:</td><td><%= @participant.race_name  %></td></tr>
-	<tr><td>DOB:</td><td><%= @participant.dob  %></td></tr>
-	<tr><td>Handedness:</td><td><%= @participant.handedness  %></td></tr>
-</table>
+<%= render :partial => 'participant_demographics' if @participant.demographic  %>
+
 
 
 <%= link_to 'Edit', edit_participant_path(@participant) %> |
