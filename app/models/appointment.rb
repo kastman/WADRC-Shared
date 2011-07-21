@@ -10,12 +10,13 @@ class Appointment < ActiveRecord::Base
   delegate :study_rmr, :to => :mri_scan
   
   has_one :mri_scan
-  has_many :series
-  has_many :series_metainfos, :through => :series
-  has_many :series_log_items, :through => :series
+  has_many :series_sets
+  has_many :series, :through => :series_sets
+  # has_many :series_metainfos, :through => :series_sets
+  # has_many :series_log_items, :through => :series
 
-  has_many :scan_tasks, :through => :series
-  has_many :pulse_sequences, :through => :series
+  # has_many :scan_tasks, :through => :series
+  # has_many :pulse_sequences, :through => :series
   
   accepts_nested_attributes_for :mri_scan, :update_only => true, :reject_if => :all_blank
     
@@ -26,23 +27,4 @@ class Appointment < ActiveRecord::Base
     matching_series.sum / matching_series.length unless matching_series.sum == 0
   end
   
-  # Take each functional task and set its series to the correct pulse sequence.
-  def align_tasks
-    task_log_items = scan_tasks
-    series_with_metainfos = series.with_functional_metainfo.with_sequence_set.order(:position)
-    # task_metainfos = series_metainfos.select {|m| m.series_description =~ /Task|fMRI/i}
-    
-    if task_log_items.size == series_with_metainfos.size
-      task_log_items.zip(series_with_metainfos).each do |item, series|
-        # if defined?(PP)
-        #   pp "Item: ", item
-        #   pp "Series: ", series
-        # end
-        item.update_attributes(:series => series) unless item.series == series
-      end
-    else
-      self.errors.add(:base, "Can't align tasks of different sizes: Items (#{task_log_items.size}), Metainfos (#{series_with_metainfos.size})")
-      return nil
-    end
-  end
 end

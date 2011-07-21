@@ -3,7 +3,7 @@ class AppointmentsController < ApplicationController
   # GET /appointments.xml
   def index
     @search = default_search(Appointment)
-    @appointments = @search.relation.includes(:visit, :series => [:series_metainfo, {:series_log_items => :functional_scenario}]).page(params[:page])
+    @appointments = @search.relation.includes(:visit, :series => [:series_metainfo, {:series_log_items => :series_scenario}]).page(params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
@@ -15,9 +15,9 @@ class AppointmentsController < ApplicationController
   # GET /appointments/1.xml
   def show
     @appointment = Appointment.find(params[:id])
-    # @series = @appointment.series.includes(:series_metainfo, :series_log_item => {:functional_scenario => :functional_set}).order("`functional_sets`.`setname` ASC, `position` ASC") # => {:functional_scenario => :functional_set})#.order("functional_sets.setname, series.position")
-    @series = @appointment.series.order("`series_set_id` ASC, `position` ASC")#.with_sequence_set #.with_pulses_or_tasks.includes(:series_metainfo, :series_log_items => {:functional_scenario => :functional_set}).order("`pfile` ASC, `position` ASC") # => {:functional_scenario => :functional_set})#.order("functional_sets.setname, series.position")
-    # logger.info @series = @appointment.series.joins("LEFT OUTER JOIN `series_log_items` ON `series_log_items`.`series_id` = `series`.`id`") #LEFT OUTER JOIN `functional_scenarios` ON `functional_scenarios`.`id` = `series_log_items`.`functional_scenario_id` LEFT OUTER JOIN `functional_sets` ON `functional_sets`.`id` = `functional_scenarios`.`functional_set_id`").order("functional_sets.setname, series.order")
+    # @series = @appointment.series.includes(:series_metainfo, :series_log_item => {:series_scenario => :functional_set}).order("`functional_sets`.`setname` ASC, `position` ASC") # => {:series_scenario => :functional_set})#.order("functional_sets.setname, series.position")
+    @series = @appointment.series #.order("`series_set_id` ASC, `position` ASC")#.with_sequence_set #.with_pulses_or_tasks.includes(:series_metainfo, :series_log_items => {:series_scenario => :functional_set}).order("`pfile` ASC, `position` ASC") # => {:series_scenario => :functional_set})#.order("functional_sets.setname, series.position")
+    # logger.info @series = @appointment.series.joins("LEFT OUTER JOIN `series_log_items` ON `series_log_items`.`series_id` = `series`.`id`") #LEFT OUTER JOIN `series_scenarios` ON `series_scenarios`.`id` = `series_log_items`.`series_scenario_id` LEFT OUTER JOIN `functional_sets` ON `functional_sets`.`id` = `series_scenarios`.`functional_set_id`").order("functional_sets.setname, series.order")
     # logger.info @series.to_sql
     # logger.info @series.count
     

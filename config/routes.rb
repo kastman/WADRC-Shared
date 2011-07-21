@@ -5,9 +5,7 @@ PandaShared::Application.routes.draw do
 
   resources :series
 
-  resources :functional_scenarios
-
-  resources :functional_sets
+  resources :series_scenarios
 
   resources :diagnosis_methods
 

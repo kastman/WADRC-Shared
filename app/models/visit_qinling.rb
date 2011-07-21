@@ -156,9 +156,9 @@ class VisitQinling < ActiveRecord::Base
   end
   
   def rmr_study
-    match = /([a-z]+)\d*/.match(rmr)
-    match = /(?:RMR)?([A-z]{3})(?:MRI)?/.match(rmr) unless match
-    match ? match[1] : ''
+    puts match = /([a-z]+)\d*/.match(rmr)
+    puts match = /(?:RMR)?(?:MA)?(?:RF)?([A-z]{3})(?:MRI)?/.match(rmr) unless match
+    match ? match[1] : nil
   end
   
   def rmr_number_enum

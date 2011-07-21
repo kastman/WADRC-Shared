@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Description:</b>
+  <%= @series_scenario.description %>
+</p>
+
+<p>
+  <b>Setname:</b>
+  <%= @series_scenario.setname %>
+</p>
+
+<p>
+  <b>Scenario Category Name:</b>
+  <%= @series_scenario.category_name %>
+</p>
+
+<p>
+  <b>Scenario file:</b>
+  <%= @series_scenario.scenario_file %>
+</p>
+
+<p>
+	<b><%= pluralize @series_scenario.series_log_items.count, "Series Log Item" %>:</b><br/>
+	<ul>
+		<% @series_scenario.series_log_items.each do |item| %>
+			<li><%= link_to item.position, item.series %>: <%= item.description  %></li>
+		<% end %>
+	</ul>
+</p>
+
+<%= link_to 'Edit', edit_series_scenario_path(@series_scenario) %> |
+<%= link_to 'Back', series_scenarios_path %>

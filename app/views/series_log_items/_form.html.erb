@@ -12,7 +12,7 @@
   <% end %>
 
 	<%= f.association :series, :collection => @series_log_item.related_series, :label_method => :position %>
-	<%= f.association :functional_scenario, :label_method => :description %>
+	<%= f.association :series_scenario, :label_method => :description %>
 	<%= f.input :logfile %>
 	<%= f.input :has_concerns %>
 	<%= f.input :comment %>

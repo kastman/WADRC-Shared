@@ -72,26 +72,10 @@ ActiveRecord::Schema.define(:version => 20110706211912) do
 
   add_index "enrollments", ["participant_id"], :name => "participant_id"
 
-  create_table "functional_scenarios", :force => true do |t|
-    t.string   "description",       :null => false
-    t.integer  "functional_set_id", :null => false
-    t.integer  "intended_reps"
-    t.string   "scenario_file"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "functional_scenarios", ["functional_set_id"], :name => "functional_set_id"
-
-  create_table "functional_sets", :force => true do |t|
-    t.string   "setname",    :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "mri_scans", :force => true do |t|
     t.integer  "appointment_id",                :null => false
     t.string   "study_rmr",                     :null => false
+    t.string   "scanner_source"
     t.integer  "exam_number"
     t.string   "study_initials"
     t.string   "radiology_outcome"
@@ -148,29 +132,28 @@ ActiveRecord::Schema.define(:version => 20110706211912) do
   end
 
   create_table "series", :force => true do |t|
-    t.integer  "appointment_id", :null => false
-    t.integer  "series_set_id",  :null => false
-    t.integer  "position",       :null => false
+    t.integer  "series_set_id", :null => false
+    t.integer  "position",      :null => false
     t.integer  "pfile"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "series", ["appointment_id"], :name => "appointment_id"
   add_index "series", ["series_set_id"], :name => "series_set_id"
 
   create_table "series_log_items", :force => true do |t|
-    t.integer  "series_id",              :null => false
-    t.integer  "functional_scenario_id"
+    t.integer  "series_id",          :null => false
+    t.integer  "series_scenario_id"
     t.string   "logfile"
     t.boolean  "has_concerns"
+    t.boolean  "functional"
     t.string   "comment"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "series_log_items", ["series_id"], :name => "series_id"
-  add_index "series_log_items", ["functional_scenario_id"], :name => "functional_scenario_id"
+  add_index "series_log_items", ["series_scenario_id"], :name => "series_scenario_id"
 
   create_table "series_metainfos", :force => true do |t|
     t.integer  "series_id",                                             :null => false
@@ -195,11 +178,41 @@ ActiveRecord::Schema.define(:version => 20110706211912) do
 
   add_index "series_metainfos", ["series_id"], :name => "series_id"
 
-  create_table "series_sets", :force => true do |t|
-    t.string   "setname",    :null => false
+  create_table "series_scenario_categories", :force => true do |t|
+    t.string   "category_name", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "series_scenarios", :force => true do |t|
+    t.string   "description",                 :null => false
+    t.integer  "series_scenario_category_id", :null => false
+    t.integer  "series_set_category_id",      :null => false
+    t.integer  "intended_reps"
+    t.string   "scenario_file"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "series_scenarios", ["series_scenario_category_id"], :name => "series_scenario_category_id"
+  add_index "series_scenarios", ["series_set_category_id"], :name => "series_set_category_id"
+
+  create_table "series_set_categories", :force => true do |t|
+    t.string   "setname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "series_sets", :force => true do |t|
+    t.integer  "appointment_id"
+    t.integer  "series_set_category_id"
+    t.integer  "position_in_category",   :default => 1, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "series_sets", ["appointment_id"], :name => "appointment_id"
+  add_index "series_sets", ["series_set_category_id"], :name => "series_set_category_id"
 
   create_table "users", :force => true do |t|
     t.string   "email"

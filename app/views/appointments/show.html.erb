@@ -26,7 +26,7 @@
 <!-- Show MRI Details -->
 <%= render @appointment.mri_scan unless @appointment.mri_scan.blank? %>
 
-<!-- Show Appointment Details -->
+<!-- Show Series Details -->
 <table>
 	<tr>
 		<th>Series Set</th>
@@ -35,11 +35,11 @@
 		<th>Metainfo</th>
 		<th>Pulse Sequence</th>
 		<th>ScanTask</th>
-		<th>All log item descriptions</th>
+		<!-- <th>All log item descriptions</th> -->
 		<th>Description Agreement</th>
 	</tr>
 <%= render @series %>
-	<tfoot><tr><td colspan="7">Total Agreement:</td><td><%= display_agreement(@appointment.total_series_description_agreement) unless @appointment.total_series_description_agreement.blank?  %></td></tr></tfoot>
+	<tfoot><tr><td colspan="6">Total Agreement:</td><td><%= display_agreement(@appointment.total_series_description_agreement) unless @appointment.total_series_description_agreement.blank?  %></td></tr></tfoot>
 </table>
 
 

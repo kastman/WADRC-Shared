@@ -1,5 +1,5 @@
 <h3>SeriesLogItemID: <%= series_log_item.id %></h3>
-<p><strong>Description:</strong><%= series_log_item.description if series_log_item.functional_scenario.present? %></p>
+<p><strong>Description:</strong><%= series_log_item.description if series_log_item.series_scenario.present? %></p>
 <p><strong>Logfile:</strong><%= series_log_item.logfile %></p>
 <p><strong>Has Concerns?:</strong><%= series_log_item.has_concerns %></p>
 <p><strong>Comment:</strong><%= series_log_item.comment %></p>

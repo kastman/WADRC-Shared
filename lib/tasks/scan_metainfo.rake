@@ -3,7 +3,7 @@ require 'pp'
 namespace :metainfo do
   
   desc "Run maintainance tasks after a fresh dump."
-  task :bootstrap => [:assign_set, :assign, :align_tasks, :assign, :remove_childless_series]
+  task :bootstrap => [:assign_set, :assign, :align_tasks, :assign, :remove_childless_series, :match_mri]
 
   desc "Assign a series_set to series (pfile, sequence, etc)"
   task(:assign_set => :environment) do
@@ -72,25 +72,26 @@ namespace :metainfo do
     errors = []
     successes = []
     
-    # Appointment.all(:limit => 50).each do |appointment|
-    Appointment.find_each do |appointment|
-      result = appointment.align_tasks
+    # SeriesSet.sequence.limit(50).each do |set|
+    SeriesSet.sequence.find_each do |set|
+      result = set.align_tasks
       
       if result
-        successes << appointment
+        successes << set
         print '.'
       elsif result == nil
-        errors << appointment
+        errors << set
         print '*'
       else
-        errors << appointment
+        errors << set
         print 'x'
       end
       STDOUT.flush
       
     end
 
-    errors.each {|appointment| pp [appointment, appointment.errors]}
+    puts 
+    errors.each {|set| pp [set, set.errors]}
     puts "#{errors.size} errors"
       
         
@@ -116,7 +117,7 @@ namespace :metainfo do
     #   end
     #   
     #   # by_set.zip(by_description).each do |in_scan, pulse|
-    #   #   pulse.functional_scenario = in_scan.functional_scenario
+    #   #   pulse.series_scenario = in_scan.series_scenario
     #   #   pulse.comment = in_scan.comment
     #   #   pulse.has_concerns = in_scan.has_concerns
     #   #   pulse.save

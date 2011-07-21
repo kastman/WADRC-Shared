@@ -5,6 +5,20 @@
   <%= @series_set.setname %>
 </p>
 
+<!-- Show Appointment Details -->
+<table>
+	<tr>
+		<th>Series Set</th>
+		<th>Order</th>
+		<th>Pfile</th>
+		<th>Metainfo</th>
+		<th>Pulse Sequence</th>
+		<th>ScanTask</th>
+		<!-- <th>All log item descriptions</th> -->
+		<th>Description Agreement</th>
+	</tr>
+<%= render @series_set.series %>
+</table>
 
 <%= link_to 'Edit', edit_series_set_path(@series_set) %> |
 <%= link_to 'Back', series_sets_path %>
